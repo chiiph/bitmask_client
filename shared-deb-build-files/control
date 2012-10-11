@@ -1,0 +1,12 @@
+Source: leap-client-springbok
+Section: misc 
+Priority: extra
+Maintainer: Kristina Clair <kclair@leap.se>
+Build-Depends: debhelper (>= 7.0.50~), python-support, python (>=2.6)
+Standards-Version: 3.8.4
+Homepage: https://leap.se 
+
+Package: leap-client-springbok
+Architecture: any
+Depends: ${misc:Depends}, ${python:Depends}, python-argparse, python-netifaces, python-ping, python-requests, python-jsonschema, python-gnutls (= 1.1.9-1), python-qt4, python-sip, openvpn, python-srp, python-keyring, python-pycrypto
+Description: Provides the LEAP Encryption Access Project desktop client

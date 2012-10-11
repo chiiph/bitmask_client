@@ -1,0 +1,47 @@
+Dependencies for building the debian package
+--------------------------------------------
+
+apt-get install debhelper dh-make devscripts libgnutls-dev cdbs python-all-dev pyqt4-dev-tools python-setuptools
+
+Steps to build the debian package
+----------------------------------
+
+These steps assume we are building for version 0.2.0.  Substitute your version number.
+
+1. set up environment variables, making sure the full name and email exactly match the GPG key used to sign:
+$ export DEBFULLNAME="Your Name"
+$ export DEBEMAIL="Your.Email@address.here"
+
+2. make sure there's a directory for the architecture for which you're building:
+# TODO: decide if these dirs should be checked in to git
+$ mkdir build-deb-amd64
+
+3. remove any previous version directory in the build dir, as well as any previous debian package files 
+   (this is just to keep clutter out). for example:
+$ rm -rf build-deb-amd64/leap-springbock-client-0.1.0
+
+4. rsync the files into a directory to build from:
+$ rsync -avp --exclude=build-deb-amd64 --exclude=.git ./ build-deb-amd64/leap-client-springbok-0.2.0/
+
+5. make a tarball for use by dh_make/debuild
+$ cd build-deb-amd64; tar zcf leap-client-springbok-0.2.0.tar.gz leap-client-springbok-0.2.0/
+
+5. run dh_make:
+$ cd leap-client-springbok-0.2.0
+$ dh_make -s -f ../leap-client-springbok-0.2.0.tar.gz -e "Your.Email@address.here" -c gpl3
+
+6. copy the control, copyright, and rules files from the shared directory
+$ cp ../../shared-deb-build-files/control debian/
+$ cp ../../shared-deb-build-files/copyright debian/
+$ cp ../../shared-deb-build-files/rules debian/
+
+7. edit these files with any changes:
+* replace your name/email as maintainer (in the future we should create a leap address/key for this)
+* add any new dependencies to the control file
+** if you add dependencies, copy the new file back to ../../shared-deb-build-files
+
+8. make sure debuild uses python 2.6 or greater
+$ echo "2.6-" > debian/pyversions
+
+9. run debuild
+$ debuild 

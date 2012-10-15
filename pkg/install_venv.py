@@ -114,7 +114,15 @@ class Debian(Distro):
 
     def install_virtualenv(self):
         if self.check_cmd('virtualenv'):
-            return
+            #detect when we are using an old version (<1.7)
+            #of virtualenv globally #inside of a virtualenv,
+            #that doesn't have virtualenv installed locally
+            try:
+                import virtualenv
+            except ImportError:
+                pass
+            else:
+                return
 
         if not self.check_pkg('python-virtualenv'):
             self.apt_install('python-virtualenv', check_exit_code=False)
@@ -167,7 +175,7 @@ def create_virtualenv(venv=VENV, no_site_packages=True):
     """
     print 'Creating venv...',
     if no_site_packages:
-        #setuptools and virtualenv don't play nicely together, 
+        #setuptools and virtualenv don't play nicely together,
         #so we create the virtualenv with the distribute package instead.
         #See: view-source:http://pypi.python.org/pypi/distribute
         run_command(['virtualenv', '-q', '--distribute', '--no-site-packages', VENV])

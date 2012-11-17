@@ -451,3 +451,7 @@ to be triggered for each one of them.
             ts = time.gmtime(float(ts))
             # XXX this could be a named tuple. prettier.
             return ts, status_step, ok, ip, remote
+
+    def get_log(self, lines=1):
+        log = self._send_command("log %s" % lines)
+        return log

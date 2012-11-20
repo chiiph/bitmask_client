@@ -13,9 +13,6 @@ from time import sleep
 
 logger = logging.getLogger(name=__name__)
 
-#EVENTS OF NOTE
-EVENT_CONNECT_REFUSED = "[ECONNREFUSED]: Connection refused (code=111)"
-
 
 class NetworkCheckerThread(object):
     """
@@ -46,12 +43,6 @@ class NetworkCheckerThread(object):
 
     def run_checks(self):
         pass
-
-    def parse_log(self, log):
-        for line in log:
-            if EVENT_CONNECT_REFUSED in line:
-                #fire cb to stop openvpn server
-                pass
 
     #private methods
 

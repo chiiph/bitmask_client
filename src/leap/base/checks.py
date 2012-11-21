@@ -145,4 +145,4 @@ class LeapNetworkChecker(object):
                 error, callbacks = each
                 if error in line:
                     for cb in callbacks:
-                        cb()
+                        if callable(cb): cb()

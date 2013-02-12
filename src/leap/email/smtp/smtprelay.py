@@ -9,6 +9,11 @@ from twisted.internet import defer
 from twisted.application import internet, service
 from twisted.python import log
 from email.Header import Header
+from leap import soledad
+
+
+class SMTPInfoNotAvailable(Exception):
+    pass
 
 
 class SMTPFactory(ServerFactory):
@@ -152,16 +157,23 @@ class EncryptedMessage():
     # this will be replaced by some other mechanism of obtaining credentials
     # for SMTP server.
     def getSMTPInfo(self):
-        #f = open('/media/smtp-info.txt', 'r')
-        #self.smtp_host = f.readline().rstrip()
-        #self.smtp_port = f.readline().rstrip()
-        #self.smtp_username = f.readline().rstrip()
-        #self.smtp_password = f.readline().rstrip()
-        #f.close()
-        self.smtp_host = ''
-        self.smtp_port = ''
-        self.smtp_username = ''
-        self.smtp_password = ''
+        # TODO: Soledad/LEAP bootstrap should store the SMTP info on local db,
+        # so this relay can load it when it needs.
+        s = soledad.Soledad(self.user.orig.addrstr)
+        doc = s.get_doc('smtp-info')
+        if not doc:
+            # TODO: uncomment below exception when integration with Soledad is
+            # smooth.
+            #raise SMTPInfoNotAvailable()
+            self.smtp_host = ''
+            self.smtp_port = ''
+            self.smtp_username = ''
+            self.smtp_password = ''
+        else:
+            self.smtp_host = doc.content['smtp_host']
+            self.smtp_port = doc.content['smtp_port']
+            self.smtp_username = doc.content['smtp_username']
+            self.smtp_password = doc.content['smtp_password']
 
 
 class GPGWrapper():

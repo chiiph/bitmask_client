@@ -72,7 +72,12 @@ class SMTPDelivery(object):
             return lambda: EncryptedMessage(user, soledad=self._soledad,
                                             gpg=self._gpg)
         except LookupError:
-            raise smtp.SMTPBadRcpt(user)
+            # if key was not found, check config to see if will send anyway.
+            if self.encrypted_only:
+                raise smtp.SMTPBadRcpt(user)
+            # TODO: send signal to cli/gui that this user's key was not found?
+            log.msg("Warning: will send an unencrypted message (because "
+                    "encrypted_only' is set to False).")
 
     def validateFrom(self, helo, originAddress):
         # accept mail from anywhere. To reject an address, raise
@@ -87,13 +92,13 @@ class EncryptedMessage():
     """
     implements(smtp.IMessage)
 
-    SMTP_HOSTNAME = "mail.riseup.net"
+    SMTP_HOSTNAME = "mail.leap.se"
     SMTP_PORT = 25
 
     def __init__(self, user, soledad,  gpg=None):
         self.user = user
         self._soledad = soledad
-        self.getSMTPInfo()
+        self.fetchConfig()
         self.lines = []
         if gpg:
             self._gpg = gpg
@@ -157,30 +162,41 @@ class EncryptedMessage():
 
     def encrypt(self, always_trust=True):
         # TODO: do not "always trust" here.
-        fp = self._gpg.find_key(self.user.dest.addrstr)['fingerprint']
-        log.msg("Encrypting to %s" % fp)
-        self.cyphertext = str(self._gpg.encrypt('\n'.join(self.body), [fp],
-                                                always_trust=always_trust))
+        try:
+            fp = self._gpg.find_key(self.user.dest.addrstr)['fingerprint']
+            log.msg("Encrypting to %s" % fp)
+            self.cyphertext = str(
+                self._gpg.encrypt(
+                    '\n'.join(self.body), [fp], always_trust=always_trust))
+        except LookupError:
+            if self.encrypted_only:
+                raise
+            log.msg("Warning: sending unencrypted mail (because "
+                    "'encrypted_only' is set to False).")
 
     # this will be replaced by some other mechanism of obtaining credentials
     # for SMTP server.
-    def getSMTPInfo(self):
+    def fetchConfig(self):
         # TODO: Soledad/LEAP bootstrap should store the SMTP info on local db,
         # so this relay can load it when it needs.
         if not self._soledad:
             # TODO: uncomment below exception when integration with Soledad is
             # smooth.
             #raise SMTPInfoNotAvailable()
+            # TODO: remove dummy settings below when soledad bootstrap is
+            # working.
             self.smtp_host = ''
             self.smtp_port = ''
             self.smtp_username = ''
             self.smtp_password = ''
+            self.encrypted_only = True
         else:
-            doc = self._soledad.get_doc('smtp-info')
-            self.smtp_host = doc.content['smtp_host']
-            self.smtp_port = doc.content['smtp_port']
-            self.smtp_username = doc.content['smtp_username']
-            self.smtp_password = doc.content['smtp_password']
+            self.smtp_config = self._soledad.get_doc('smtp_relay_config')
+            for confname in [ 
+                'smtp_host', 'smtp_port', 'smtp_username',
+                'smtp_password', 'encrypted_only',
+            ]:
+                setattr(self, confname, doc.content[confname])
 
 
 class GPGWrapper():

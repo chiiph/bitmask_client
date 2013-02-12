@@ -1,3 +1,7 @@
+"""
+LEAP SMTP encrypted relay.
+"""
+
 import re
 import gnupg
 from zope.interface import implements
@@ -21,13 +25,14 @@ class SMTPFactory(ServerFactory):
     Factory for an SMTP server with encrypted relaying capabilities.
     """
 
-    def __init__(self, gpg=None):
+    def __init__(self, soledad, gpg=None):
+        self._soledad = soledad
         self._gpg = gpg
 
     def buildProtocol(self, addr):
         "Return a protocol suitable for the job."
         # TODO: use ESMTP here.
-        smtpProtocol = smtp.SMTP(SMTPDelivery(self._gpg))
+        smtpProtocol = smtp.SMTP(SMTPDelivery(self._soledad, self._gpg))
         smtpProtocol.factory = self
         return smtpProtocol
 
@@ -39,7 +44,8 @@ class SMTPDelivery(object):
 
     implements(smtp.IMessageDelivery)
 
-    def __init__(self, gpg=None):
+    def __init__(self, soledad, gpg=None):
+        self._soledad = soledad
         if gpg:
             self._gpg = gpg
         else:
@@ -63,7 +69,8 @@ class SMTPDelivery(object):
             #if trust != 'u':
             #    raise smtp.SMTPBadRcpt(user)
             log.msg("Accepting mail for %s..." % user.dest)
-            return lambda: EncryptedMessage(user, gpg=self._gpg)
+            return lambda: EncryptedMessage(user, soledad=self._soledad,
+                                            gpg=self._gpg)
         except LookupError:
             raise smtp.SMTPBadRcpt(user)
 
@@ -83,8 +90,9 @@ class EncryptedMessage():
     SMTP_HOSTNAME = "mail.riseup.net"
     SMTP_PORT = 25
 
-    def __init__(self, user, gpg=None):
+    def __init__(self, user, soledad,  gpg=None):
         self.user = user
+        self._soledad = soledad
         self.getSMTPInfo()
         self.lines = []
         if gpg:
@@ -159,9 +167,7 @@ class EncryptedMessage():
     def getSMTPInfo(self):
         # TODO: Soledad/LEAP bootstrap should store the SMTP info on local db,
         # so this relay can load it when it needs.
-        s = soledad.Soledad(self.user.orig.addrstr)
-        doc = s.get_doc('smtp-info')
-        if not doc:
+        if not self._soledad:
             # TODO: uncomment below exception when integration with Soledad is
             # smooth.
             #raise SMTPInfoNotAvailable()
@@ -170,6 +176,7 @@ class EncryptedMessage():
             self.smtp_username = ''
             self.smtp_password = ''
         else:
+            doc = self._soledad.get_doc('smtp-info')
             self.smtp_host = doc.content['smtp_host']
             self.smtp_port = doc.content['smtp_port']
             self.smtp_username = doc.content['smtp_username']
@@ -211,9 +218,13 @@ class GPGWrapper():
 
 # service configuration
 port = 25
-factory = SMTPFactory()
+user_email = 'user@leap.se' # TODO: replace for real mail from gui/cli
 
-# these enable the use of this service with twistd
+# instantiate soledad for client app storage and sync
+s = soledad.Soledad(user_email)
+factory = SMTPFactory(s)
+
+# enable the use of this service with twistd
 application = service.Application("LEAP SMTP Relay")
 service = internet.TCPServer(port, factory)
 service.setServiceParent(application)

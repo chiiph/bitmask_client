@@ -54,7 +54,7 @@ class TestSmtpRelay(tests.OpenPGPTestCase):
                         '250 Sender address accepted',
                         '250 Recipient address accepted',
                         '354 Continue']
-        proto = SMTPFactory(self._gpg).buildProtocol(('127.0.0.1', 0))
+        proto = SMTPFactory(None, self._gpg).buildProtocol(('127.0.0.1', 0))
         transport = proto_helpers.StringTransport()
         proto.makeConnection(transport)
         for i, line in enumerate(self.EMAIL_DATA):
@@ -64,9 +64,12 @@ class TestSmtpRelay(tests.OpenPGPTestCase):
         proto.setTimeout(None)
 
     def test_message_encrypt(self):
-        proto = SMTPFactory(self._gpg).buildProtocol(('127.0.0.1', 0))
+        """
+        Test if message gets encrypted to destination email.
+        """
+        proto = SMTPFactory(None, self._gpg).buildProtocol(('127.0.0.1', 0))
         user = User('leap@leap.se', 'relay.leap.se', proto, 'leap@leap.se')
-        m = EncryptedMessage(user, self._gpg)
+        m = EncryptedMessage(user, None, self._gpg)
         for line in self.EMAIL_DATA[4:12]:
             m.lineReceived(line)
         m.parseMessage()

@@ -42,6 +42,7 @@ class OpenPGPTestCase(unittest.TestCase, BaseLeapTest):
         shutil.rmtree(self.tempdir)
 
     def test_openpgp_encrypt_decrypt(self):
+        "Test if openpgp can encrypt and decrypt."
         text = "simple raw text"
         encrypted = str(self._gpg.encrypt(text, KEY_FINGERPRINT,
                                           # TODO: handle always trust issue

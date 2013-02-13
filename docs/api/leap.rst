@@ -36,6 +36,7 @@ Subpackages
     leap.crypto
     leap.eip
     leap.gui
+    leap.soledad
     leap.testing
     leap.util
 

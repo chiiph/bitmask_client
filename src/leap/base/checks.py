@@ -231,7 +231,8 @@ class LeapNetworkChecker(object):
 
         logger.debug('packet loss %s%%' % packet_loss)
         if packet_loss > constants.MAX_ICMP_PACKET_LOSS:
-            raise NoConnectionToGateway()
+            logger.warning("Packet LOSS = %s" % (packet_loss,))
+            #raise NoConnectionToGateway()
 
     def check_name_resolution(self, domain_name):
         try:

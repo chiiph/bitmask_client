@@ -7,17 +7,17 @@ import requests
 
 from leap import __branding as BRANDING
 from leap import certs as leapcerts
-from leap.base.auth import srpauth_protected, magick_srpauth
 from leap.base import config as baseconfig
 from leap.base import constants as baseconstants
 from leap.base import providers
 from leap.base.crypto import certs
+from leap.base.util.file import mkdir_p
+from leap.base.auth import srpauth_protected, magick_srpauth
 from leap.eip import config as eipconfig
 from leap.eip import constants as eipconstants
 from leap.eip import exceptions as eipexceptions
 from leap.eip import specs as eipspecs
 from leap.util.certs import get_mac_cabundle
-from leap.util.fileutil import mkdir_p
 from leap.util.web import get_https_domain_and_port
 
 logger = logging.getLogger(name=__name__)

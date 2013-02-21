@@ -5,7 +5,7 @@ import stat
 import tempfile
 import unittest
 
-from leap.util import fileutil
+from leap.base import util
 
 
 class FileUtilTest(unittest.TestCase):
@@ -72,7 +72,7 @@ class FileUtilTest(unittest.TestCase):
 
         if self.system == "Linux":
             self.assertEqual(
-                fileutil.which('cp'),
+                util.file.which('cp'),
                 '/bin/cp')
 
     def test_mkdir_p(self):
@@ -82,7 +82,7 @@ class FileUtilTest(unittest.TestCase):
         testdir = self.get_file_path(
             os.path.join('test', 'foo', 'bar'))
         self.assertEqual(os.path.isdir(testdir), False)
-        fileutil.mkdir_p(testdir)
+        util.file.mkdir_p(testdir)
         self.assertEqual(os.path.isdir(testdir), True)
 
     def test_check_and_fix_urw_only(self):
@@ -92,7 +92,7 @@ class FileUtilTest(unittest.TestCase):
         fp = self.touch_exec_file()
         mode = self.get_mode(fp)
         self.assertEqual(mode, int('700', 8))
-        fileutil.check_and_fix_urw_only(fp)
+        util.file.check_and_fix_urw_only(fp)
         mode = self.get_mode(fp)
         self.assertEqual(mode, int('600', 8))
 

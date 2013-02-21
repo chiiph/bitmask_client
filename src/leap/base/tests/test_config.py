@@ -10,8 +10,8 @@ import requests
 from leap.base import config
 from leap.base import constants
 from leap.base import exceptions
+from leap.base.util.file import mkdir_p
 from leap.eip import constants as eipconstants
-from leap.util.fileutil import mkdir_p
 from leap.testing.basetest import BaseLeapTest
 
 

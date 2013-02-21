@@ -9,6 +9,7 @@ from StringIO import StringIO
 
 from leap.util.misc import null_check
 
+
 logger = logging.getLogger(__name__)
 
 

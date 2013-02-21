@@ -1,7 +1,7 @@
 import commands
 import os
 
-from leap.util.fileutil import which
+from leap.base.util.file import which
 
 
 def is_pkexec_in_system():

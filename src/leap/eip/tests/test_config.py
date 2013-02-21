@@ -15,7 +15,7 @@ except ImportError:
 from leap.eip import config as eipconfig
 from leap.eip.tests.data import EIP_SAMPLE_CONFIG, EIP_SAMPLE_SERVICE
 from leap.testing.basetest import BaseLeapTest
-from leap.util.fileutil import mkdir_p, mkdir_f
+from leap.base.util.file import mkdir_p, mkdir_f
 
 _system = platform.system()
 
@@ -232,7 +232,7 @@ class EIPConfigTest(BaseLeapTest):
         self.write_sample_eipconfig()
 
         from leap.eip import config as eipconfig
-        from leap.util.fileutil import which
+        from leap.base.util.file import which
         path = os.environ['PATH']
         vpnbin = which('openvpn', path=path)
         #print 'path =', path
@@ -248,7 +248,7 @@ class EIPConfigTest(BaseLeapTest):
         self.touch_exec()
 
         from leap.eip import config as eipconfig
-        from leap.util.fileutil import which
+        from leap.base.util.file import which
         path = os.environ['PATH']
         vpnbin = which('openvpn', path=path)
 

@@ -18,6 +18,7 @@ import requests
 from leap.base import config as baseconfig
 from leap.base.constants import (DEFAULT_PROVIDER_DEFINITION,
                                  DEFINITION_EXPECTED_PATH)
+from leap.base.util.file import mkdir_f
 from leap.eip import checks as eipchecks
 from leap.eip import specs as eipspecs
 from leap.eip import exceptions as eipexceptions
@@ -25,7 +26,6 @@ from leap.eip.tests import data as testdata
 from leap.testing.basetest import BaseLeapTest
 from leap.testing.https_server import BaseHTTPSServerTestCase
 from leap.testing.https_server import where as where_cert
-from leap.util.fileutil import mkdir_f
 
 
 class NoLogRequestHandler:

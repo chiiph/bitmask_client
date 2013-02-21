@@ -9,7 +9,7 @@ except ImportError:
     import unittest
 
 from leap.base.config import get_username, get_groupname
-from leap.util.fileutil import mkdir_p, check_and_fix_urw_only
+from leap.base.util.file import mkdir_p, check_and_fix_urw_only
 
 _system = platform.system()
 

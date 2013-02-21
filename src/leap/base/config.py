@@ -8,20 +8,21 @@ import re
 import socket
 import time
 import os
-
-logger = logging.getLogger(name=__name__)
+import requests
 
 from dateutil import parser as dateparser
 from xdg import BaseDirectory
-import requests
 
 from leap.base import exceptions
 from leap.base import constants
 from leap.base.pluggableconfig import PluggableConfig
-from leap.util.fileutil import (mkdir_p)
+from leap.base.util.file import mkdir_p
 
 # move to base!
 from leap.eip import exceptions as eipexceptions
+
+
+logger = logging.getLogger(name=__name__)
 
 
 class BaseLeapConfig(object):

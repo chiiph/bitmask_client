@@ -8,15 +8,61 @@ import netifaces
 import sh
 
 from leap.base import constants
-from leap.base import exceptions
+from leap.base.exceptions import LeapException, CriticalError
+from leap.util.translations import translate
 
 logger = logging.getLogger(name=__name__)
 _platform = platform.system()
 
 #EVENTS OF NOTE
 EVENT_CONNECT_REFUSED = "[ECONNREFUSED]: Connection refused (code=111)"
-
 ICMP_TARGET = "8.8.8.8"
+
+
+# NOTE: "Errors" (context) has to be a explicit string!
+class InterfaceNotFoundError(LeapException):
+    # XXX should take iface arg on init maybe?
+    message = "interface not found"
+    usermessage = translate(
+        "Errors",
+        "Interface not found")
+
+
+class NoDefaultInterfaceFoundError(LeapException):
+    message = "no default interface found"
+    usermessage = translate(
+        "Errors",
+        "Looks like your computer "
+        "is not connected to the internet")
+
+
+class NoConnectionToGateway(CriticalError):
+    message = "no connection to gateway"
+    usermessage = translate(
+        "Errors",
+        "Looks like there are problems "
+        "with your internet connection")
+
+
+class NoInternetConnection(CriticalError):
+    message = "No Internet connection found"
+    usermessage = translate(
+        "Errors",
+        "It looks like there is no internet connection.")
+
+
+class CannotResolveDomainError(LeapException):
+    message = "Cannot resolve domain"
+    usermessage = translate(
+        "Errors",
+        "Domain cannot be found")
+
+
+class TunnelNotDefaultRouteError(LeapException):
+    message = "Tunnel connection dissapeared. VPN down?"
+    usermessage = translate(
+        "Errors",
+        "The Encrypted Connection was lost.")
 
 
 class LeapNetworkChecker(object):
@@ -58,16 +104,16 @@ class LeapNetworkChecker(object):
                     error = "Provider server appears to be down."
 
                 logger.error(error)
-                raise exceptions.NoInternetConnection(error)
+                raise NoInternetConnection(error)
 
         else:
-            raise NotImplementedError
+            raise NotImplementedError()
 
     def is_internet_up(self):
         iface, gateway = self.get_default_interface_gateway()
         try:
             self.ping_gateway(self.provider_gateway)
-        except exceptions.NoConnectionToGateway:
+        except NoConnectionToGateway:
             return False
         return True
 
@@ -79,7 +125,7 @@ class LeapNetworkChecker(object):
         #toss out header
         route_table.pop(0)
         if not route_table:
-            raise exceptions.NoDefaultInterfaceFoundError
+            raise NoDefaultInterfaceFoundError()
         return route_table
 
     def _get_def_iface_osx(self):
@@ -128,7 +174,7 @@ class LeapNetworkChecker(object):
                 # when we have successfully completed a connection
                 # ... TRIGGER: Connection stablished (or whatever it is)
                 # in the logs
-                raise exceptions.TunnelNotDefaultRouteError
+                raise TunnelNotDefaultRouteError
         else:
             #logger.debug('PLATFORM !!! %s', _platform)
             raise NotImplementedError
@@ -160,10 +206,10 @@ class LeapNetworkChecker(object):
             raise NotImplementedError
 
         if not default_iface:
-            raise exceptions.NoDefaultInterfaceFoundError
+            raise NoDefaultInterfaceFoundError()
 
         if default_iface not in netifaces.interfaces():
-            raise exceptions.InterfaceNotFoundError
+            raise InterfaceNotFoundError()
         logger.debug('-- default iface %s', default_iface)
         return default_iface, gw
 
@@ -185,14 +231,14 @@ class LeapNetworkChecker(object):
 
         logger.debug('packet loss %s%%' % packet_loss)
         if packet_loss > constants.MAX_ICMP_PACKET_LOSS:
-            raise exceptions.NoConnectionToGateway
+            raise NoConnectionToGateway()
 
     def check_name_resolution(self, domain_name):
         try:
             socket.gethostbyname(domain_name)
             return True
         except socket.gaierror:
-            raise exceptions.CannotResolveDomainError
+            raise CannotResolveDomainError()
 
     def parse_log_and_react(self, log, error_matrix=None):
         """

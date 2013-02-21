@@ -9,7 +9,10 @@ from mock import (patch, Mock)
 from StringIO import StringIO
 
 from leap.base import checks
-from leap.base import exceptions
+from leap.base.checks import (NoDefaultInterfaceFoundError,
+                              TunnelNotDefaultRouteError,
+                              NoConnectionToGateway,
+                              NoInternetConnection)
 from leap.testing.basetest import BaseLeapTest
 
 _uid = os.getuid()
@@ -61,7 +64,7 @@ class LeapNetworkCheckTest(BaseLeapTest):
     def test_get_default_interface_no_interface(self):
         checker = checks.LeapNetworkChecker()
         with patch('leap.base.checks.open', create=True) as mock_open:
-            with self.assertRaises(exceptions.NoDefaultInterfaceFoundError):
+            with self.assertRaises(NoDefaultInterfaceFoundError):
                 mock_open.return_value = StringIO(
                     "Iface\tDestination Gateway\t"
                     "Flags\tRefCntd\tUse\tMetric\t"
@@ -71,7 +74,7 @@ class LeapNetworkCheckTest(BaseLeapTest):
     def test_check_tunnel_default_interface(self):
         checker = checks.LeapNetworkChecker()
         with patch('leap.base.checks.open', create=True) as mock_open:
-            with self.assertRaises(exceptions.TunnelNotDefaultRouteError):
+            with self.assertRaises(TunnelNotDefaultRouteError):
                 mock_open.return_value = StringIO(
                     "Iface\tDestination Gateway\t"
                     "Flags\tRefCntd\tUse\tMetric\t"
@@ -91,7 +94,7 @@ class LeapNetworkCheckTest(BaseLeapTest):
     def test_ping_gateway_fail(self):
         checker = checks.LeapNetworkChecker()
         with patch.object(sh, "ping") as mocked_ping:
-            with self.assertRaises(exceptions.NoConnectionToGateway):
+            with self.assertRaises(NoConnectionToGateway):
                 mocked_ping.return_value = Mock
                 mocked_ping.return_value.stdout = "11% packet loss"
                 checker.ping_gateway("4.2.2.2")
@@ -123,14 +126,14 @@ rtt min/avg/max/mdev = 30.497/32.172/36.161/1.755 ms"""
         TimeoutError = get_ping_timeout_error()
         with patch.object(sh, "ping") as mocked_ping:
             mocked_ping.side_effect = TimeoutError
-            with self.assertRaises(exceptions.NoInternetConnection):
+            with self.assertRaises(NoInternetConnection):
                 with patch.object(checker, "ping_gateway") as mock_gateway:
-                    mock_gateway.side_effect = exceptions.NoConnectionToGateway
+                    mock_gateway.side_effect = NoConnectionToGateway
                     checker.check_internet_connection()
 
         with patch.object(sh, "ping") as mocked_ping:
             mocked_ping.side_effect = TimeoutError
-            with self.assertRaises(exceptions.NoInternetConnection):
+            with self.assertRaises(NoInternetConnection):
                 with patch.object(checker, "ping_gateway") as mock_gateway:
                     mock_gateway.return_value = True
                     checker.check_internet_connection()

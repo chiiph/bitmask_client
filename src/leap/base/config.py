@@ -13,7 +13,6 @@ import requests
 from dateutil import parser as dateparser
 from xdg import BaseDirectory
 
-from leap.base import exceptions
 from leap.base import constants
 from leap.base.pluggableconfig import PluggableConfig
 from leap.base.util.file import mkdir_p
@@ -23,6 +22,10 @@ from leap.eip import exceptions as eipexceptions
 
 
 logger = logging.getLogger(name=__name__)
+
+
+class ImproperlyConfigured(Exception):
+    pass
 
 
 class BaseLeapConfig(object):
@@ -70,7 +73,7 @@ class MetaConfigWithSpec(type):
         # maybe should use abc module for this.
         abcderived = ("JSONLeapConfig",)
         if schema_obj is None and classname not in abcderived:
-            raise exceptions.ImproperlyConfigured(
+            raise ImproperlyConfigured(
                 "missing spec dict on your derived class (%s)" % classname)
 
         # we create a configuration spec attribute
@@ -111,13 +114,13 @@ class JSONLeapConfig(BaseLeapConfig):
         try:
             assert self.slug is not None
         except AssertionError:
-            raise exceptions.ImproperlyConfigured(
+            raise ImproperlyConfigured(
                 "missing slug on JSONLeapConfig"
                 " derived class")
         try:
             assert self.spec is not None
         except AssertionError:
-            raise exceptions.ImproperlyConfigured(
+            raise ImproperlyConfigured(
                 "missing spec on JSONLeapConfig"
                 " derived class")
         assert issubclass(self.spec, PluggableConfig)

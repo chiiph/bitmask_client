@@ -6,7 +6,7 @@ import threading
 from leap.eip import config as eipconfig
 from leap.base.checks import LeapNetworkChecker
 from leap.base.constants import ROUTE_CHECK_INTERVAL
-from leap.base.exceptions import TunnelNotDefaultRouteError
+from leap.base.checks import TunnelNotDefaultRouteError
 from leap.util.misc import null_check
 from leap.util.coroutines import (launch_thread, process_events)
 

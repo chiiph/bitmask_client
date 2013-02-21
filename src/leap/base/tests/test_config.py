@@ -9,7 +9,6 @@ import requests
 
 from leap.base import config
 from leap.base import constants
-from leap.base import exceptions
 from leap.base.util.file import mkdir_p
 from leap.eip import constants as eipconstants
 from leap.testing.basetest import BaseLeapTest
@@ -31,7 +30,7 @@ class JSONLeapConfigTest(BaseLeapTest):
         pass
 
     def test_metaclass(self):
-        with self.assertRaises(exceptions.ImproperlyConfigured) as exc:
+        with self.assertRaises(config.ImproperlyConfigured) as exc:
             class DummyTestConfig(config.JSONLeapConfig):
                 __metaclass__ = config.MetaConfigWithSpec
             exc.startswith("missing spec dict")
@@ -39,7 +38,7 @@ class JSONLeapConfigTest(BaseLeapTest):
         class DummyTestConfig(config.JSONLeapConfig):
             __metaclass__ = config.MetaConfigWithSpec
             spec = {'properties': {}}
-        with self.assertRaises(exceptions.ImproperlyConfigured) as exc:
+        with self.assertRaises(config.ImproperlyConfigured) as exc:
             DummyTestConfig()
             exc.startswith("missing slug")
 

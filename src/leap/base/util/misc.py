@@ -6,17 +6,8 @@ import psutil
 from leap.base.constants import OPENVPN_BIN
 
 
-class ImproperlyConfigured(Exception):
-    """
-    """
-
-
 def null_check(value, value_name):
-    try:
-        assert value is not None
-    except AssertionError:
-        raise ImproperlyConfigured(
-            "%s parameter cannot be None" % value_name)
+    assert value is not None, "%s parameter cannot be None" % (value_name,)
 
 
 def get_openvpn_pids():

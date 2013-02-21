@@ -6,10 +6,9 @@ import tempfile
 
 from leap import __branding as BRANDING
 from leap import certs
-from leap.util.misc import null_check
-from leap.base.util.file import (which, mkdir_p, check_and_fix_urw_only)
-
 from leap.base import config as baseconfig
+from leap.base.util.misc import null_check
+from leap.base.util.file import (which, mkdir_p, check_and_fix_urw_only)
 from leap.baseapp.permcheck import (is_pkexec_in_system,
                                     is_auth_agent_running)
 from leap.eip import exceptions as eip_exceptions

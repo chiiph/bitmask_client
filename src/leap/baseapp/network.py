@@ -2,14 +2,13 @@ from __future__ import print_function
 
 import logging
 
-logger = logging.getLogger(name=__name__)
-
 from PyQt4 import QtCore
 
 from leap.baseapp.dialogs import ErrorDialog
 from leap.base.network import NetworkCheckerThread
+from leap.base.util.misc import null_check
 
-from leap.util.misc import null_check
+logger = logging.getLogger(name=__name__)
 
 
 class NetworkCheckerAppMixin(object):

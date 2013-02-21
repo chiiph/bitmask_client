@@ -7,7 +7,7 @@ from dateutil.parser import parse
 from OpenSSL import crypto
 from StringIO import StringIO
 
-from leap.util.misc import null_check
+from leap.base.util.misc import null_check
 
 
 logger = logging.getLogger(__name__)

@@ -150,7 +150,7 @@ class LeapNetworkChecker(object):
         line = route_table.pop(0)
         iface, destination = line.split('\t')[0:2]
         if not destination == '00000000' or not iface == 'tun0':
-            raise exceptions.TunnelNotDefaultRouteError()
+            raise TunnelNotDefaultRouteError()
         return True
 
     def check_tunnel_default_interface(self):

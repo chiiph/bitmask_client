@@ -7,7 +7,8 @@ from leap.eip import config as eipconfig
 from leap.base.checks import LeapNetworkChecker
 from leap.base.constants import ROUTE_CHECK_INTERVAL
 from leap.base.checks import TunnelNotDefaultRouteError
-from leap.util.misc import null_check
+from leap.base.util.misc import null_check
+# To be removed in a later refactor stage
 from leap.util.coroutines import (launch_thread, process_events)
 
 from time import sleep

@@ -11,7 +11,7 @@ from leap.base.auth import srpauth_protected, magick_srpauth
 from leap.base import config as baseconfig
 from leap.base import constants as baseconstants
 from leap.base import providers
-from leap.crypto import certs
+from leap.base.crypto import certs
 from leap.eip import config as eipconfig
 from leap.eip import constants as eipconstants
 from leap.eip import exceptions as eipexceptions

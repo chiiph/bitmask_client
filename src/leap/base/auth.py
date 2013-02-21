@@ -1,15 +1,10 @@
 import binascii
-import json
 import logging
-#import urlparse
-
 import requests
 import srp
 
-from PyQt4 import QtCore
-
 from leap.base import constants as baseconstants
-from leap.crypto import leapkeyring
+from leap.base.crypto import leapkeyring
 from leap.util.misc import null_check
 from leap.util.web import get_https_domain_and_port
 
@@ -271,15 +266,6 @@ def srpauth_protected(user=None, passwd=None, server=None, verify=True):
     return srpauth
 
 
-def get_leap_credentials():
-    settings = QtCore.QSettings()
-    full_username = settings.value('username')
-    username, domain = full_username.split('@')
-    seed = settings.value('%s_seed' % domain, None)
-    password = leapkeyring.leap_get_password(full_username, seed=seed)
-    return (username, password)
-
-
 # XXX TODO
 # Pass verify as single argument,
 # in srpauth_protected style
@@ -300,7 +286,7 @@ def magick_srpauth(fn):
         # api.foo.bar
         # Unless we keep a table with the
         # equivalencies...
-        user, passwd = get_leap_credentials()
+        user, passwd = leapkeyring.get_leap_credentials()
 
         # XXX pass verify and server too
         # (pop)

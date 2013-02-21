@@ -2,6 +2,8 @@ import keyring
 
 from leap.base.config import get_config_file
 
+from PyQt4 import QtCore
+
 #############
 # Disclaimer
 #############
@@ -62,6 +64,15 @@ def leap_get_password(key, seed="xxx"):
     keyring.set_keyring(LeapCryptedFileKeyring(seed=seed))
     #import ipdb;ipdb.set_trace()
     return keyring.get_password('leap', key)
+
+
+def get_leap_credentials():
+    settings = QtCore.QSettings()
+    full_username = settings.value('username')
+    username, domain = full_username.split('@')
+    seed = settings.value('%s_seed' % domain, None)
+    password = leap_get_password(full_username, seed=seed)
+    return (username, password)
 
 
 if __name__ == "__main__":

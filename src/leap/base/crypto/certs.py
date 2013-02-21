@@ -1,11 +1,11 @@
 import logging
 import os
-from StringIO import StringIO
 import ssl
 import time
 
 from dateutil.parser import parse
 from OpenSSL import crypto
+from StringIO import StringIO
 
 from leap.util.misc import null_check
 

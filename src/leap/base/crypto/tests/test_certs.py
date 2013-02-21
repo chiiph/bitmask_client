@@ -1,7 +1,7 @@
 import unittest
 
 from leap.testing.https_server import where
-from leap.crypto import certs
+from leap.base.crypto import certs
 
 
 class CertTestCase(unittest.TestCase):

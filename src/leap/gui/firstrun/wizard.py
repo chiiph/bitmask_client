@@ -12,7 +12,7 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 from leap.base import checks as basechecks
-from leap.crypto import leapkeyring
+from leap.base.crypto import leapkeyring
 from leap.eip import checks as eipchecks
 
 from leap.gui import firstrun

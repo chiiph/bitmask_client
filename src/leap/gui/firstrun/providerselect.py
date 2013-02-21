@@ -9,7 +9,6 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 from leap.base import exceptions as baseexceptions
-#from leap.crypto import certs
 from leap.eip import exceptions as eipexceptions
 from leap.gui.progress import InlineValidationPage
 from leap.gui import styles

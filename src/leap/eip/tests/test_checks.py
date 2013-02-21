@@ -15,7 +15,7 @@ import jsonschema
 #import ping
 import requests
 
-from leap.base import config as baseconfig
+from leap.base.config import baseconfig
 from leap.base.constants import (DEFAULT_PROVIDER_DEFINITION,
                                  DEFINITION_EXPECTED_PATH)
 from leap.base.util.file import mkdir_f

@@ -2,7 +2,7 @@ from __future__ import (unicode_literals)
 import os
 
 from leap import __branding
-from leap.base import config as baseconfig
+from leap.base.config import util
 
 # XXX move provider stuff to base config
 
@@ -12,13 +12,13 @@ PROVIDER_CA_CERT = __branding.get(
 
 provider_ca_path = lambda domain: str(os.path.join(
     #baseconfig.get_default_provider_path(),
-    baseconfig.get_provider_path(domain),
+    util.get_provider_path(domain),
     'keys', 'ca',
     'cacert.pem'
 )) if domain else None
 
 default_provider_ca_path = lambda: str(os.path.join(
-    baseconfig.get_default_provider_path(),
+    util.get_default_provider_path(),
     'keys', 'ca',
     PROVIDER_CA_CERT
 ))
@@ -27,13 +27,13 @@ PROVIDER_DOMAIN = __branding.get('provider_domain', 'testprovider.example.org')
 
 
 client_cert_path = lambda domain: unicode(os.path.join(
-    baseconfig.get_provider_path(domain),
+    util.get_provider_path(domain),
     'keys', 'client',
     'openvpn.pem'
 )) if domain else None
 
 default_client_cert_path = lambda: unicode(os.path.join(
-    baseconfig.get_default_provider_path(),
+    util.get_default_provider_path(),
     'keys', 'client',
     'openvpn.pem'
 ))

@@ -1,6 +1,6 @@
 import keyring
 
-from leap.base.config import get_config_file
+from leap.base.config.util import get_config_file
 
 from PyQt4 import QtCore
 

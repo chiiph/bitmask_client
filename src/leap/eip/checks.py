@@ -7,9 +7,9 @@ import requests
 
 from leap import __branding as BRANDING
 from leap import certs as leapcerts
-from leap.base import config as baseconfig
 from leap.base import constants as baseconstants
 from leap.base import providers
+from leap.base.config import baseconfig
 from leap.base.crypto import certs
 from leap.base.util.file import mkdir_p
 from leap.base.auth import srpauth_protected, magick_srpauth

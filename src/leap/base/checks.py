@@ -9,7 +9,7 @@ import sh
 
 from leap.base import constants
 from leap.base.exceptions import LeapException, CriticalError
-from leap.util.translations import translate
+from leap.base.util.translations import translate
 
 logger = logging.getLogger(name=__name__)
 _platform = platform.system()

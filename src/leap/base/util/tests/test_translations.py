@@ -1,6 +1,6 @@
 import unittest
 
-from leap.util import translations
+from leap.base.util import translations
 
 
 class TrasnlationsTestCase(unittest.TestCase):

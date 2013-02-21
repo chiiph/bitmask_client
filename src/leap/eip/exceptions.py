@@ -33,7 +33,7 @@ TODO:
 
 """
 from leap.base.exceptions import LeapException
-from leap.util.translations import translate
+from leap.base.util.translations import translate
 
 
 # This should inherit from LeapException
@@ -97,13 +97,6 @@ class EIPBadCertError(Warning):
     usermessage = translate(
         "EIPErrors",
         "there is a problem with provider certificate")
-
-
-class LeapBadConfigFetchedError(Warning):
-    message = "provider sent a malformed json file"
-    usermessage = translate(
-        "EIPErrors",
-        "an error occurred during configuratio of leap services")
 
 
 class OpenVPNAlreadyRunning(CriticalError):

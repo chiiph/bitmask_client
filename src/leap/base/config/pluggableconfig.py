@@ -10,7 +10,7 @@ import urlparse
 
 import jsonschema
 
-from leap.util.translations import LEAPTranslatable
+from leap.base.util.translations import LEAPTranslatable
 
 logger = logging.getLogger(__name__)
 

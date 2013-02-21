@@ -9,8 +9,8 @@ import os
 
 import jsonschema
 
-from leap.base.config import JSONLeapConfig
-from leap.base import pluggableconfig
+from leap.base.config.baseconfig import JSONLeapConfig
+from leap.base.config.pluggableconfig import TypeCastException
 from leap.testing.basetest import BaseLeapTest
 
 SAMPLE_CONFIG_DICT = {
@@ -84,7 +84,7 @@ class TestJSONLeapConfigValidation(BaseLeapTest):
         # We should have to extend the Configuration class
         blah = copy.deepcopy(SAMPLE_CONFIG_DICT)
         blah['prop_uri'] = 'xxx'
-        with self.assertRaises(pluggableconfig.TypeCastException):
+        with self.assertRaises(TypeCastException):
             self.sampleconfig.validate(blah)
 
 

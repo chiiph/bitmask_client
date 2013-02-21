@@ -7,7 +7,7 @@ import socket
 import mock
 import requests
 
-from leap.base import config
+from leap.base.config import baseconfig
 from leap.base import constants
 from leap.base.util.file import mkdir_p
 from leap.eip import constants as eipconstants
@@ -30,20 +30,20 @@ class JSONLeapConfigTest(BaseLeapTest):
         pass
 
     def test_metaclass(self):
-        with self.assertRaises(config.ImproperlyConfigured) as exc:
-            class DummyTestConfig(config.JSONLeapConfig):
-                __metaclass__ = config.MetaConfigWithSpec
+        with self.assertRaises(baseconfig.ImproperlyConfigured) as exc:
+            class DummyTestConfig(baseconfig.JSONLeapConfig):
+                __metaclass__ = baseconfig.MetaConfigWithSpec
             exc.startswith("missing spec dict")
 
-        class DummyTestConfig(config.JSONLeapConfig):
-            __metaclass__ = config.MetaConfigWithSpec
+        class DummyTestConfig(baseconfig.JSONLeapConfig):
+            __metaclass__ = baseconfig.MetaConfigWithSpec
             spec = {'properties': {}}
-        with self.assertRaises(config.ImproperlyConfigured) as exc:
+        with self.assertRaises(baseconfig.ImproperlyConfigured) as exc:
             DummyTestConfig()
             exc.startswith("missing slug")
 
-        class DummyTestConfig(config.JSONLeapConfig):
-            __metaclass__ = config.MetaConfigWithSpec
+        class DummyTestConfig(baseconfig.JSONLeapConfig):
+            __metaclass__ = baseconfig.MetaConfigWithSpec
             spec = {'properties': {}}
             slug = "foo"
         DummyTestConfig()
@@ -157,7 +157,7 @@ class ConfigHelperFunctions(BaseLeapTest):
         config file path where expected? (linux)
         """
         self.assertEqual(
-            config.get_config_file(
+            baseconfig.get_config_file(
                 'test', folder="foo/bar"),
             os.path.expanduser(
                 '~/.config/leap/foo/bar/test')
@@ -191,7 +191,7 @@ class ConfigHelperFunctions(BaseLeapTest):
         nice config dir? (linux)
         """
         self.assertEqual(
-            config.get_config_dir(),
+            baseconfig.get_config_dir(),
             os.path.expanduser('~/.config/leap'))
 
     @unittest.skipUnless(_system == "Darwin", "mac only")
@@ -216,7 +216,7 @@ class ConfigHelperFunctions(BaseLeapTest):
         is default provider path ok?
         """
         self.assertEqual(
-            config.get_default_provider_path(),
+            baseconfig.get_default_provider_path(),
             os.path.expanduser(
                 '~/.config/leap/providers/%s/' %
                 constants.DEFAULT_PROVIDER)
@@ -228,11 +228,11 @@ class ConfigHelperFunctions(BaseLeapTest):
         """
         check our ip validation
         """
-        config.validate_ip('3.3.3.3')
+        baseconfig.validate_ip('3.3.3.3')
         with self.assertRaises(socket.error):
-            config.validate_ip('255.255.255.256')
+            baseconfig.validate_ip('255.255.255.256')
         with self.assertRaises(socket.error):
-            config.validate_ip('foobar')
+            baseconfig.validate_ip('foobar')
 
     @unittest.skip
     def test_validate_domain(self):

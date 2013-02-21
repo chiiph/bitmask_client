@@ -6,7 +6,7 @@ import tempfile
 
 from leap import __branding as BRANDING
 from leap import certs
-from leap.base import config as baseconfig
+from leap.base.config import baseconfig, util
 from leap.base.util.misc import null_check
 from leap.base.util.file import (which, mkdir_p, check_and_fix_urw_only)
 from leap.baseapp.permcheck import (is_pkexec_in_system,
@@ -24,7 +24,7 @@ class EIPConfig(baseconfig.JSONLeapConfig):
     spec = eipspecs.eipconfig_spec
 
     def _get_slug(self):
-        eipjsonpath = baseconfig.get_config_file(
+        eipjsonpath = util.get_config_file(
             'eip.json')
         return eipjsonpath
 
@@ -40,10 +40,10 @@ class EIPServiceConfig(baseconfig.JSONLeapConfig):
     def _get_slug(self):
         domain = getattr(self, 'domain', None)
         if domain:
-            path = baseconfig.get_provider_path(domain)
+            path = util.get_provider_path(domain)
         else:
-            path = baseconfig.get_default_provider_path()
-        return baseconfig.get_config_file(
+            path = util.get_default_provider_path()
+        return util.get_config_file(
             'eip-service.json', folder=path)
 
     def _set_slug(self):
@@ -169,8 +169,8 @@ def build_ovpn_options(daemon=False, socket_path=None, **kwargs):
 
     # get user/group name
     # also from config.
-    user = baseconfig.get_username()
-    group = baseconfig.get_groupname()
+    user = util.get_username()
+    group = util.get_groupname()
 
     opts = []
 

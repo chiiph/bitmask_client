@@ -10,7 +10,7 @@ import jsonschema
 
 #from leap import __branding as BRANDING
 from leap.testing.basetest import BaseLeapTest
-from leap.base import providers
+from leap.base.config import providers
 
 
 EXPECTED_DEFAULT_CONFIG = {

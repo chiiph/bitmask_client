@@ -1,7 +1,7 @@
 from argparse import Namespace
 import unittest
 
-from leap.util import leap_argparse
+from leap.base.util import leap_argparse
 
 
 class LeapArgParseTest(unittest.TestCase):

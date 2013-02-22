@@ -28,7 +28,7 @@ def main():
     long live to the (hidden) leap window!
     """
     import sys
-    from leap.util import leap_argparse
+    from leap.base.util import leap_argparse
     parser, opts = leap_argparse.init_leapc_args()
     debug = getattr(opts, 'debug', False)
 

@@ -6,7 +6,7 @@ try:
     from collections import OrderedDict
 except ImportError:  # pragma: no cover
     # We must be in 2.6
-    from leap.util.dicts import OrderedDict
+    from leap.base.util.dicts import OrderedDict
 
 import logging
 

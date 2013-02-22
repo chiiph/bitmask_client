@@ -23,7 +23,7 @@ try:
     from collections import OrderedDict
 except ImportError:
     # We must be in 2.6
-    from leap.util.dicts import OrderedDict
+    from leap.base.util.dicts import OrderedDict
 
 logger = logging.getLogger(__name__)
 

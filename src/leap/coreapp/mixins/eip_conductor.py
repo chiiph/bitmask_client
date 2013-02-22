@@ -11,7 +11,7 @@ from leap.base.exceptions import LeapException
 from leap.eip.eipconnection import EIPConnection
 from leap.eip.openvpn.connection import EIPNoCommandError
 from leap.base.checks import EVENT_CONNECT_REFUSED
-from leap.util import geo
+from leap.base.util import geo
 
 logger = logging.getLogger(name=__name__)
 

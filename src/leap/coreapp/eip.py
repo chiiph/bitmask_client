@@ -5,7 +5,7 @@ import time
 
 from PyQt4 import QtCore
 
-from leap.coreapp.dialogs import ErrorDialog
+from leap.gui.dialogs import ErrorDialog
 from leap.coreapp import constants
 from leap.eip import exceptions as eip_exceptions
 from leap.eip.eipconnection import EIPConnection

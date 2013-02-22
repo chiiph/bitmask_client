@@ -4,7 +4,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from leap.coreapp.dialogs import ErrorDialog
+from leap.gui.dialogs import ErrorDialog
 from leap.base.network import NetworkCheckerThread
 from leap.base.util.misc import null_check
 

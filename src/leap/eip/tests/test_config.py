@@ -13,6 +13,7 @@ except ImportError:
 #from leap.eip import config as eip_config
 #from leap import __branding as BRANDING
 from leap.eip import config as eipconfig
+from leap.eip.openvpn.util import build_ovpn_command
 from leap.eip.tests.data import EIP_SAMPLE_CONFIG, EIP_SAMPLE_SERVICE
 from leap.testing.basetest import BaseLeapTest
 from leap.base.util.file import mkdir_p, mkdir_f
@@ -237,7 +238,7 @@ class EIPConfigTest(BaseLeapTest):
         vpnbin = which('openvpn', path=path)
         #print 'path =', path
         #print 'vpnbin = ', vpnbin
-        vpncommand, vpnargs = eipconfig.build_ovpn_command(
+        vpncommand, vpnargs = build_ovpn_command(
             do_pkexec_check=False, vpnbin=vpnbin,
             socket_path="/tmp/test.socket",
             provider=self.provider)
@@ -256,7 +257,7 @@ class EIPConfigTest(BaseLeapTest):
 
         # regular run, everything normal
         self.write_sample_eipservice(vpnciphers=True)
-        vpncommand, vpnargs = eipconfig.build_ovpn_command(
+        vpncommand, vpnargs = build_ovpn_command(
             do_pkexec_check=False, vpnbin=vpnbin,
             socket_path="/tmp/test.socket",
             provider=self.provider)
@@ -270,7 +271,7 @@ class EIPConfigTest(BaseLeapTest):
             vpnciphers=True,
             # WE ONLY ALLOW vpn options in auth, cipher, tls-cipher
             extra_vpnopts={"notallowedconfig": "badvalue"})
-        vpncommand, vpnargs = eipconfig.build_ovpn_command(
+        vpncommand, vpnargs = build_ovpn_command(
             do_pkexec_check=False, vpnbin=vpnbin,
             socket_path="/tmp/test.socket",
             provider=self.provider)
@@ -284,7 +285,7 @@ class EIPConfigTest(BaseLeapTest):
             vpnciphers=True,
             # WE ONLY ALLOW A-Z09\-
             extra_vpnopts={"cipher": "AES-128-CBC;FOOTHING"})
-        vpncommand, vpnargs = eipconfig.build_ovpn_command(
+        vpncommand, vpnargs = build_ovpn_command(
             do_pkexec_check=False, vpnbin=vpnbin,
             socket_path="/tmp/test.socket",
             provider=self.provider)

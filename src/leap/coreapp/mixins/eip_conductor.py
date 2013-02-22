@@ -9,7 +9,7 @@ from leap.gui.dialogs import ErrorDialog
 from leap.coreapp import constants
 from leap.base.exceptions import LeapException
 from leap.eip.eipconnection import EIPConnection
-from leap.eip.openvpnconnection import EIPNoCommandError
+from leap.eip.openvpn.connection import EIPNoCommandError
 from leap.base.checks import EVENT_CONNECT_REFUSED
 from leap.util import geo
 

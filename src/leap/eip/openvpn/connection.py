@@ -20,8 +20,9 @@ from leap.base.util.translations import translate
 from leap.util.coroutines import spawn_and_watch_process
 from leap.util.misc import get_openvpn_pids
 
-from leap.eip.udstelnet import UDSTelnet, MissingSocketError, ConnectionRefusedError
+from leap.eip.openvpn.udstelnet import UDSTelnet, MissingSocketError, ConnectionRefusedError
 from leap.eip import config as eip_config
+from leap.eip.openvpn.util import build_ovpn_command
 from leap.eip.config import (EIPNoPolkitAuthAgentAvailable,
                              EIPNoPkexecAvailable,
                              EIPInitBadKeyFilePermError)
@@ -316,7 +317,7 @@ to be triggered for each one of them.
 
     def _set_ovpn_command(self):
         try:
-            command, args = eip_config.build_ovpn_command(
+            command, args = build_ovpn_command(
                 provider=self.provider,
                 debug=self.debug,
                 socket_path=self.host,

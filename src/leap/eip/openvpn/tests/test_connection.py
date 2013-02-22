@@ -16,8 +16,8 @@ except ImportError:
 from mock import Mock, patch  # MagicMock
 
 from leap.eip import config as eipconfig
-from leap.eip import openvpnconnection
-from leap.eip.udstelnet import UDSTelnet
+from leap.eip.openvpn import connection
+from leap.eip.openvpn.udstelnet import UDSTelnet
 from leap.testing.basetest import BaseLeapTest
 
 _system = platform.system()
@@ -37,8 +37,8 @@ mock_UDSTelnet = Mock(spec=UDSTelnet)
 # XXX redo after merge-refactor
 
 
-@patch('openvpnconnection.OpenVPNConnection.connect_to_management')
-class MockedOpenVPNConnection(openvpnconnection.OpenVPNConnection):
+@patch('connection.OpenVPNConnection.connect_to_management')
+class MockedOpenVPNConnection(connection.OpenVPNConnection):
     def __init__(self, *args, **kwargs):
         self.mock_UDSTelnet = Mock()
         super(MockedOpenVPNConnection, self).__init__(
@@ -88,14 +88,14 @@ class OpenVPNConnectionTest(BaseLeapTest):
     def test_detect_vpn(self):
         # XXX review, not sure if captured all the logic
         # while fixing. kali.
-        openvpn_connection = openvpnconnection.OpenVPNConnection()
+        openvpn_connection = connection.OpenVPNConnection()
 
         with patch.object(psutil, "process_iter") as mocked_psutil:
             mocked_process = Mock()
             mocked_process.name = "openvpn"
             mocked_process.cmdline = ["openvpn", "-foo", "-bar", "-gaaz"]
             mocked_psutil.return_value = [mocked_process]
-            with self.assertRaises(openvpnconnection.OpenVPNAlreadyRunning):
+            with self.assertRaises(connection.OpenVPNAlreadyRunning):
                 openvpn_connection._check_if_running_instance()
 
         openvpn_connection._check_if_running_instance()

@@ -12,8 +12,8 @@ from dateutil.parser import parse as dateparse
 from leap.eip import config as eipconfig
 from leap.eip.checks import ProviderCertChecker
 from leap.eip.checks import EIPConfigChecker
-from leap.eip.udstelnet import ConnectionRefusedError
-from leap.eip.openvpnconnection import OpenVPNConnection
+from leap.eip.openvpn.udstelnet import ConnectionRefusedError
+from leap.eip.openvpn.connection import OpenVPNConnection
 
 logger = logging.getLogger(name=__name__)
 

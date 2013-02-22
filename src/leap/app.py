@@ -11,7 +11,7 @@ from PyQt4.QtGui import (QApplication, QSystemTrayIcon, QMessageBox)
 from PyQt4 import QtCore
 
 from leap import __version__ as VERSION
-from leap.baseapp.mainwindow import LeapWindow
+from leap.coreapp.mainwindow import LeapWindow
 from leap.gui import locale_rc
 
 

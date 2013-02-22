@@ -4,11 +4,11 @@ website: U{https://leap.se/}
 """
 
 from leap import eip
-from leap import baseapp
+from leap import coreapp
 from leap import util
 from leap import soledad
 
-__all__ = [eip, baseapp, util, soledad]
+__all__ = [eip, coreapp, util, soledad]
 
 __version__ = "unknown"
 try:

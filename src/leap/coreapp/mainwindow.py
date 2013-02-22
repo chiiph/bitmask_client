@@ -9,11 +9,11 @@ sip.setapi('QVariant', 2)
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from leap.baseapp.eip import EIPConductorAppMixin
-from leap.baseapp.log import LogPaneMixin
-from leap.baseapp.systray import StatusAwareTrayIconMixin
-from leap.baseapp.network import NetworkCheckerAppMixin
-from leap.baseapp.leap_app import MainWindowMixin
+from leap.coreapp.eip import EIPConductorAppMixin
+from leap.coreapp.log import LogPaneMixin
+from leap.coreapp.systray import StatusAwareTrayIconMixin
+from leap.coreapp.network import NetworkCheckerAppMixin
+from leap.coreapp.leap_app import MainWindowMixin
 from leap.eip.checks import ProviderCertChecker
 from leap.gui.threads import FunThread
 

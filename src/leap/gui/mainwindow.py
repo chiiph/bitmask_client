@@ -9,7 +9,7 @@ sip.setapi('QVariant', 2)
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from leap.coreapp.eip import EIPConductorAppMixin
+from leap.coreapp.mixins.eip_conductor import EIPConductorAppMixin
 from leap.coreapp.network import NetworkCheckerAppMixin
 from leap.coreapp.threads import FunThread
 from leap.gui.log import LogPaneMixin
@@ -21,7 +21,8 @@ logger = logging.getLogger(name=__name__)
 
 
 class LeapWindow(QtGui.QMainWindow,
-                 MainWindowMixin, EIPConductorAppMixin,
+                 MainWindowMixin,
+                 EIPConductorAppMixin,
                  StatusAwareTrayIconMixin,
                  NetworkCheckerAppMixin,
                  LogPaneMixin):

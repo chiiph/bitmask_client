@@ -13,7 +13,7 @@ from PyQt4 import QtGui
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import Qt
 
-from leap.gui import firstrun
+from leap.gui.wizards import firstrun
 
 try:
     from collections import OrderedDict

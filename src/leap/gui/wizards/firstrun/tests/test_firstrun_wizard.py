@@ -13,7 +13,7 @@ import PyQt4.QtCore  # some weirdness with mock module
 from PyQt4.QtTest import QTest
 #from PyQt4.QtCore import Qt
 
-from leap.gui import firstrun
+from leap.gui.wizards import firstrun
 
 
 class TestWizard(firstrun.wizard.FirstRunWizard):

@@ -15,7 +15,7 @@ from leap.base import checks as basechecks
 from leap.base.crypto import leapkeyring
 from leap.eip import checks as eipchecks
 
-from leap.gui import firstrun
+from leap.gui.wizards import firstrun
 
 from leap.gui import mainwindow_rc
 

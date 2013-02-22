@@ -10,7 +10,7 @@ import requests
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from leap.gui.firstrun.mixins import UserFormMixIn
+from leap.gui.wizards.firstrun.mixins import UserFormMixIn
 
 logger = logging.getLogger(__name__)
 

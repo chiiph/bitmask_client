@@ -5,7 +5,7 @@ try:
 except ValueError:
     pass
 
-import firstrun
-import firstrun.wizard
+import wizards.firstrun
+import wizards.firstrun.wizard
 
 __all__ = ['firstrun', 'firstrun.wizard']

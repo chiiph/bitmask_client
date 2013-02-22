@@ -157,7 +157,7 @@ class LeapWindow(QtGui.QMainWindow,
         """
         launches wizard and blocks
         """
-        from leap.gui.firstrun.wizard import FirstRunWizard
+        from leap.gui.wizards.firstrun.wizard import FirstRunWizard
         wizard = FirstRunWizard(
             self.conductor,
             parent=self,

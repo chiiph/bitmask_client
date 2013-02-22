@@ -7,7 +7,7 @@ from PyQt4 import QtGui
 import requests
 
 from leap.base import auth
-from leap.gui.firstrun.mixins import UserFormMixIn
+from leap.gui.wizards.firstrun.mixins import UserFormMixIn
 from leap.gui.wizards.base.progress import InlineValidationPage
 from leap.gui import styles
 

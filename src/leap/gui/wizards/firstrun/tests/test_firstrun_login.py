@@ -22,7 +22,7 @@ except ImportError:
     from leap.util.dicts import OrderedDict
 
 
-class TestPage(firstrun.login.LogInPage):
+class TestPage(firstrun.login_page.LogInPage):
     pass
 
 
@@ -100,7 +100,7 @@ class RegisterUserPageUITestCase(qunittest.TestCase):
         pages = OrderedDict((
             (self.pagename, TestPage),
             ('providersetupvalidation',
-             firstrun.connect.ConnectionPage)))
+             firstrun.connecting_page.ConnectionPage)))
         self.wizard = firstrun.wizard.FirstRunWizard(None, pages_dict=pages)
         self.page = self.wizard.page(self.wizard.get_page_index(self.pagename))
 

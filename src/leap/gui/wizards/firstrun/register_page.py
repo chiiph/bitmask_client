@@ -10,8 +10,6 @@ import requests
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from leap.gui.wizards.firstrun.mixins import UserFormMixIn
-
 logger = logging.getLogger(__name__)
 
 from leap.base import auth
@@ -20,7 +18,7 @@ from leap.gui.constants import APP_LOGO, BARE_USERNAME_REGEX
 from leap.gui.wizards.base.progress import InlineValidationPage
 
 
-class RegisterUserPage(InlineValidationPage, UserFormMixIn):
+class RegisterUserPage(InlineValidationPage):
 
     def __init__(self, parent=None):
 

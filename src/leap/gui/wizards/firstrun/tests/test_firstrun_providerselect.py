@@ -103,7 +103,7 @@ class SelectProviderPageUITestCase(qunittest.TestCase):
         pages = OrderedDict((
             (self.pagename, TestPage),
             ('providerinfo',
-             firstrun.providerinfo.ProviderInfoPage)))
+             firstrun.providerinfo_page.ProviderInfoPage)))
         self.wizard = firstrun.wizard.FirstRunWizard(None, pages_dict=pages)
         self.page = self.wizard.page(self.wizard.get_page_index(self.pagename))
 

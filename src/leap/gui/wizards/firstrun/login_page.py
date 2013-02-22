@@ -7,14 +7,13 @@ from PyQt4 import QtGui
 import requests
 
 from leap.base import auth
-from leap.gui.wizards.firstrun.mixins import UserFormMixIn
 from leap.gui.wizards.base.progress import InlineValidationPage
 from leap.gui import styles
 
 from leap.coreapp.constants import APP_LOGO, FULL_USERNAME_REGEX
 
 
-class LogInPage(InlineValidationPage, UserFormMixIn):  # InlineValidationPage
+class LogInPage(InlineValidationPage):
 
     def __init__(self, parent=None):
 

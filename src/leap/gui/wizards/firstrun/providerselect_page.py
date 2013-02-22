@@ -367,6 +367,9 @@ class SelectProviderPage(InlineValidationPage):
         self.clearTable()
         self.domain_checked = False
 
+    def set_validation_status(self, msg):
+        self.validationMsg.setText(msg)
+
     # pagewizard methods
 
     def isComplete(self):

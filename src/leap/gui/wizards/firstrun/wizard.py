@@ -51,17 +51,17 @@ TODO-ish:
 
 def get_pages_dict():
     return OrderedDict((
-        ('intro', firstrun.intro.IntroPage),
+        ('intro', firstrun.intro_page.IntroPage),
         ('providerselection',
-            firstrun.providerselect.SelectProviderPage),
-        ('login', firstrun.login.LogInPage),
-        ('providerinfo', firstrun.providerinfo.ProviderInfoPage),
+            firstrun.providerselect_page.SelectProviderPage),
+        ('login', firstrun.login_page.LogInPage),
+        ('providerinfo', firstrun.providerinfo_page.ProviderInfoPage),
         ('providersetupvalidation',
-            firstrun.providersetup.ProviderSetupValidationPage),
-        ('signup', firstrun.register.RegisterUserPage),
+            firstrun.providersetup_page.ProviderSetupValidationPage),
+        ('signup', firstrun.register_page.RegisterUserPage),
         ('connect',
-            firstrun.connect.ConnectionPage),
-        ('lastpage', firstrun.last.LastPage)
+            firstrun.connecting_page.ConnectionPage),
+        ('lastpage', firstrun.last_page.LastPage)
     ))
 
 

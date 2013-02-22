@@ -5,24 +5,24 @@ try:
 except ValueError:
     pass
 
-import intro
-import connect
-import last
-import login
+import intro_page
+import connecting_page
+import last_page
+import login_page
 import mixins
-import providerinfo
-import providerselect
-import providersetup
-import register
+import providerinfo_page
+import providerselect_page
+import providersetup_page
+import register_page
 
 __all__ = [
-    'intro',
-    'connect',
-    'last',
-    'login',
+    'intro_page',
+    'connecting_page',
+    'last_page',
+    'login_page',
     'mixins',
-    'providerinfo',
-    'providerselect',
-    'providersetup',
-    'register',
+    'providerinfo_page',
+    'providerselect_page',
+    'providersetup_page',
+    'register_page',
     ]  # ,'wizard']

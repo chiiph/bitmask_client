@@ -14,13 +14,13 @@ from leap.base.crypto import certs
 from leap.base.util.file import mkdir_p
 from leap.base.util.web import get_https_domain_and_port
 from leap.base.util.translations import translate
+from leap.base.util.certs import get_mac_cabundle
 from leap.base.auth import srpauth_protected, magick_srpauth
 from leap.base.exceptions import LeapException
 from leap.eip import config as eipconfig
 from leap.eip import constants as eipconstants
 from leap.eip import exceptions as eipexceptions
 from leap.eip import specs as eipspecs
-from leap.util.certs import get_mac_cabundle
 
 logger = logging.getLogger(name=__name__)
 

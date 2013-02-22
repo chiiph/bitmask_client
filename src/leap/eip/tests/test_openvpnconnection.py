@@ -17,7 +17,6 @@ from mock import Mock, patch  # MagicMock
 
 from leap.eip import config as eipconfig
 from leap.eip import openvpnconnection
-from leap.eip import exceptions as eipexceptions
 from leap.eip.udstelnet import UDSTelnet
 from leap.testing.basetest import BaseLeapTest
 
@@ -96,7 +95,7 @@ class OpenVPNConnectionTest(BaseLeapTest):
             mocked_process.name = "openvpn"
             mocked_process.cmdline = ["openvpn", "-foo", "-bar", "-gaaz"]
             mocked_psutil.return_value = [mocked_process]
-            with self.assertRaises(eipexceptions.OpenVPNAlreadyRunning):
+            with self.assertRaises(openvpnconnection.OpenVPNAlreadyRunning):
                 openvpn_connection._check_if_running_instance()
 
         openvpn_connection._check_if_running_instance()

@@ -15,7 +15,7 @@ except ImportError:
 from mock import Mock, patch  # MagicMock
 
 from leap.eip.eipconnection import EIPConnection
-from leap.eip.exceptions import ConnectionRefusedError
+from leap.eip.udstelnet import ConnectionRefusedError
 from leap.eip import specs as eipspecs
 from leap.testing.basetest import BaseLeapTest
 

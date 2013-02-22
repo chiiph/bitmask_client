@@ -229,7 +229,7 @@ class JSONLeapConfig(BaseLeapConfig):
                 self._config.load(request.content)
                 self._config.set_dirty()
             except ValueError:
-                raise eipexceptions.LeapBadConfigFetchedError
+                raise LeapBadConfigFetchedError()
 
         return True
 

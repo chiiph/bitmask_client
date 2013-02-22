@@ -2,7 +2,13 @@ import os
 import socket
 import telnetlib
 
-from leap.eip import exceptions as eip_exceptions
+
+class ConnectionRefusedError(Exception):
+    pass
+
+
+class MissingSocketError(Exception):
+    pass
 
 
 class UDSTelnet(telnetlib.Telnet):
@@ -28,11 +34,11 @@ class UDSTelnet(telnetlib.Telnet):
         if self.port == "unix":
             # unix sockets spoken
             if not os.path.exists(self.host):
-                raise eip_exceptions.MissingSocketError
+                raise MissingSocketError()
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             try:
                 self.sock.connect(self.host)
             except socket.error:
-                raise eip_exceptions.ConnectionRefusedError
+                raise ConnectionRefusedError()
         else:
             self.sock = socket.create_connection((host, port), timeout)

@@ -7,8 +7,9 @@ from PyQt4 import QtCore
 
 from leap.gui.dialogs import ErrorDialog
 from leap.coreapp import constants
-from leap.eip import exceptions as eip_exceptions
+from leap.base.exceptions import LeapException
 from leap.eip.eipconnection import EIPConnection
+from leap.eip.openvpnconnection import EIPNoCommandError
 from leap.base.checks import EVENT_CONNECT_REFUSED
 from leap.util import geo
 
@@ -82,9 +83,8 @@ class EIPConductorAppMixin(object):
             # redundant log, debugging the loop.
             logger.error('%s: %s', error.__class__.__name__, error.message)
 
-            if issubclass(error.__class__, eip_exceptions.EIPClientError):
+            if issubclass(error.__class__, LeapException):
                 self.triggerEIPError.emit(error)
-
             else:
                 # deprecated form of raising exception.
                 raise error, None, tb
@@ -212,7 +212,7 @@ class EIPConductorAppMixin(object):
             try:
                 self.conductor.connect()
 
-            except eip_exceptions.EIPNoCommandError as exc:
+            except EIPNoCommandError as exc:
                 logger.error('tried to run openvpn but no command is set')
                 self.triggerEIPError.emit(exc)
 

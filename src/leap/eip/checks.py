@@ -12,13 +12,15 @@ from leap.base import providers
 from leap.base.config import baseconfig
 from leap.base.crypto import certs
 from leap.base.util.file import mkdir_p
+from leap.base.util.web import get_https_domain_and_port
+from leap.base.util.translations import translate
 from leap.base.auth import srpauth_protected, magick_srpauth
+from leap.base.exceptions import LeapException
 from leap.eip import config as eipconfig
 from leap.eip import constants as eipconstants
 from leap.eip import exceptions as eipexceptions
 from leap.eip import specs as eipspecs
 from leap.util.certs import get_mac_cabundle
-from leap.util.web import get_https_domain_and_port
 
 logger = logging.getLogger(name=__name__)
 
@@ -48,6 +50,28 @@ def get_branding_ca_cert(domain):
     ca_file = BRANDING.get('provider_ca_file')
     if ca_file:
         return leapcerts.where(ca_file)
+
+
+class HttpsNotSupported(LeapException):
+    message = "connection refused while accessing via https"
+    usermessage = translate(
+        "EIPErrors",
+        "Server does not allow secure connections")
+
+
+class HttpsBadCertError(LeapException):
+    message = "verification error on cert"
+    usermessage = translate(
+        "EIPErrors",
+        "Server certificate could not be verified")
+
+
+class EIPConfigurationError(LeapException):
+    pass
+
+
+class EIPMissingDefaultProvider(Exception):
+    pass
 
 
 class ProviderCertChecker(object):
@@ -170,11 +194,11 @@ class ProviderCertChecker(object):
             self.fetcher.get(uri, verify=verify)
 
         except requests.exceptions.SSLError as exc:
-            raise eipexceptions.HttpsBadCertError
+            raise HttpsBadCertError()
 
         except requests.exceptions.ConnectionError:
             logger.error('ConnectionError')
-            raise eipexceptions.HttpsNotSupported
+            raise HttpsNotSupported()
 
         else:
             return True
@@ -414,7 +438,7 @@ class EIPConfigChecker(object):
         logger.debug('checking default provider')
         provider = config.get('provider', None)
         if provider is None:
-            raise eipexceptions.EIPMissingDefaultProvider
+            raise EIPMissingDefaultProvider()
         # XXX raise also if malformed ProviderDefinition?
         return True
 
@@ -488,7 +512,7 @@ class EIPConfigChecker(object):
             assert config['provider'] is not None
             # XXX assert there is gateway !!
         except AssertionError:
-            raise eipexceptions.EIPConfigurationError
+            raise EIPConfigurationError()
 
         # XXX TODO:
         # We should WRITE eip config if missing or

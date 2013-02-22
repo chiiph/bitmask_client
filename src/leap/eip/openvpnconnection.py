@@ -15,12 +15,32 @@ logger = logging.getLogger(name=__name__)
 
 from leap.base.connection import Connection
 from leap.base.constants import OPENVPN_BIN
+from leap.base.exceptions import LeapException, CriticalError
+from leap.base.util.translations import translate
 from leap.util.coroutines import spawn_and_watch_process
 from leap.util.misc import get_openvpn_pids
 
-from leap.eip.udstelnet import UDSTelnet
+from leap.eip.udstelnet import UDSTelnet, MissingSocketError, ConnectionRefusedError
 from leap.eip import config as eip_config
-from leap.eip import exceptions as eip_exceptions
+from leap.eip.config import (EIPNoPolkitAuthAgentAvailable,
+                             EIPNoPkexecAvailable,
+                             EIPInitBadKeyFilePermError)
+
+
+class OpenVPNAlreadyRunning(CriticalError):
+    message = "Another OpenVPN Process is already running."
+    usermessage = translate(
+        "EIPErrors",
+        "Another OpenVPN Process has been detected. "
+        "Please close it before starting leap-client")
+
+
+class EIPNoCommandError(LeapException):
+    message = "no suitable openvpn command found"
+    usermessage = translate(
+        "EIPErrors",
+        "No suitable openvpn command found. "
+        "<br/>(Might be a permissions problem)")
 
 
 class OpenVPNManagement(object):
@@ -86,7 +106,7 @@ class OpenVPNManagement(object):
         if not self.connected():
             try:
                 self._connect_to_management()
-            except eip_exceptions.MissingSocketError:
+            except MissingSocketError:
                 #logger.warning('missing management socket')
                 return []
         try:
@@ -214,7 +234,7 @@ to be triggered for each one of them.
         """
         # XXX should make public method
         if self.command is None:
-            raise eip_exceptions.EIPNoCommandError
+            raise EIPNoCommandError()
         if self.subp is not None:
             logger.debug('cowardly refusing to launch subprocess again')
             # XXX this is not returning ???!!
@@ -237,7 +257,7 @@ to be triggered for each one of them.
         if self.subp:
             try:
                 self._stop_openvpn()
-            except eip_exceptions.ConnectionRefusedError:
+            except ConnectionRefusedError:
                 logger.warning(
                     'unable to send sigterm signal to openvpn: '
                     'connection refused.')
@@ -289,7 +309,7 @@ to be triggered for each one of them.
             logger.debug('an openvpn instance is already running.')
             logger.debug('attempting to stop openvpn instance.')
             if not self._stop_openvpn():
-                raise eip_exceptions.OpenVPNAlreadyRunning
+                raise OpenVPNAlreadyRunning()
             return
         else:
             logger.debug('no openvpn instance found.')
@@ -301,10 +321,10 @@ to be triggered for each one of them.
                 debug=self.debug,
                 socket_path=self.host,
                 ovpn_verbosity=self.ovpn_verbosity)
-        except eip_exceptions.EIPNoPolkitAuthAgentAvailable:
+        except EIPNoPolkitAuthAgentAvailable:
             command = args = None
             raise
-        except eip_exceptions.EIPNoPkexecAvailable:
+        except EIPNoPkexecAvailable:
             command = args = None
             raise
 
@@ -318,7 +338,7 @@ to be triggered for each one of them.
         """
         try:
             eip_config.check_vpn_keys(provider=self.provider)
-        except eip_exceptions.EIPInitBadKeyFilePermError:
+        except EIPInitBadKeyFilePermError:
             logger.error('Bad VPN Keys permission!')
             # do nothing now
         # and raise the rest ...

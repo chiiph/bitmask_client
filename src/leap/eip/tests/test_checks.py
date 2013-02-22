@@ -21,7 +21,8 @@ from leap.base.constants import (DEFAULT_PROVIDER_DEFINITION,
 from leap.base.util.file import mkdir_f
 from leap.eip import checks as eipchecks
 from leap.eip import specs as eipspecs
-from leap.eip import exceptions as eipexceptions
+from leap.eip.checks import (EIPMissingDefaultProvider,
+                             EIPConfigurationError)
 from leap.eip.tests import data as testdata
 from leap.testing.basetest import BaseLeapTest
 from leap.testing.https_server import BaseHTTPSServerTestCase
@@ -111,7 +112,7 @@ class EIPCheckTest(BaseLeapTest):
         # place, when JSONConfig does validation of required fields.
 
         # passing direct config
-        with self.assertRaises(eipexceptions.EIPMissingDefaultProvider):
+        with self.assertRaises(EIPMissingDefaultProvider):
             checker.check_is_there_default_provider(config={})
 
         # ok. now, messing with real files...
@@ -169,11 +170,11 @@ class EIPCheckTest(BaseLeapTest):
 
     def test_check_complete_eip_config(self):
         checker = eipchecks.EIPConfigChecker()
-        with self.assertRaises(eipexceptions.EIPConfigurationError):
+        with self.assertRaises(EIPConfigurationError):
             sampleconfig = copy.copy(testdata.EIP_SAMPLE_CONFIG)
             sampleconfig['provider'] = None
             checker.check_complete_eip_config(config=sampleconfig)
-        with self.assertRaises(eipexceptions.EIPConfigurationError):
+        with self.assertRaises(EIPConfigurationError):
             sampleconfig = copy.copy(testdata.EIP_SAMPLE_CONFIG)
             del sampleconfig['provider']
             checker.check_complete_eip_config(config=sampleconfig)
@@ -344,7 +345,7 @@ class ProviderCertCheckerHTTPSTests(BaseHTTPSServerTestCase, BaseLeapTest):
     def test_is_cert_valid(self):
         checker = eipchecks.ProviderCertChecker()
         # TODO: better exception catching
-        # should raise eipexceptions.BadClientCertificate, and give reasons
+        # should raise BadClientCertificate, and give reasons
         # on msg.
         with self.assertRaises(Exception) as exc:
             self.assertFalse(checker.is_cert_valid())

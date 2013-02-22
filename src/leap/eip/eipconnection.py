@@ -9,10 +9,10 @@ import time
 
 from dateutil.parser import parse as dateparse
 
+from leap.eip import config as eipconfig
 from leap.eip.checks import ProviderCertChecker
 from leap.eip.checks import EIPConfigChecker
-from leap.eip import config as eipconfig
-from leap.eip import exceptions as eip_exceptions
+from leap.eip.udstelnet import ConnectionRefusedError
 from leap.eip.openvpnconnection import OpenVPNConnection
 
 logger = logging.getLogger(name=__name__)
@@ -49,7 +49,7 @@ class StatusMixIn(object):
         """
         try:
             state = self.get_connection_state()
-        except eip_exceptions.ConnectionRefusedError:
+        except ConnectionRefusedError:
             # connection refused. might be not ready yet.
             if not self.ERR_CONNREFUSED:
                 logger.warning('connection refused')

@@ -6,7 +6,7 @@ import srp
 from leap.base import constants as baseconstants
 from leap.base.crypto import leapkeyring
 from leap.base.util.misc import null_check
-from leap.util.web import get_https_domain_and_port
+from leap.base.util.web import get_https_domain_and_port
 
 logger = logging.getLogger(__name__)
 

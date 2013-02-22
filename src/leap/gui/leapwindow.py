@@ -10,11 +10,11 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 from leap.coreapp.mixins.eip_conductor import EIPConductorAppMixin
-from leap.coreapp.network import NetworkCheckerAppMixin
+from leap.coreapp.mixins.networkchecker import NetworkCheckerAppMixin
 from leap.coreapp.threads import FunThread
-from leap.gui.log import LogPaneMixin
+from leap.gui.mixins.logpane import LogPaneMixin
 from leap.gui.mixins.mainwindow import MainWindowMixin
-from leap.gui.systray import StatusAwareTrayIconMixin
+from leap.gui.mixins.systray import StatusAwareTrayIconMixin
 from leap.eip.checks import ProviderCertChecker
 
 logger = logging.getLogger(name=__name__)

@@ -9,11 +9,11 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 from leap.base import exceptions as baseexceptions
-from leap.eip import exceptions as eipexceptions
+from leap.base.util.web import get_https_domain_and_port
 from leap.gui.progress import InlineValidationPage
 from leap.gui import styles
 from leap.coreapp.utils import delay
-from leap.util.web import get_https_domain_and_port
+from leap.eip.checks import HttpsBadCertError
 
 from leap.coreapp.constants import APP_LOGO
 
@@ -236,7 +236,7 @@ class SelectProviderPage(InlineValidationPage):
                     "https://%s" % _domain,
                     verify=True)
 
-            except eipexceptions.HttpsBadCertError as exc:
+            except HttpsBadCertError as exc:
                 logger.debug('exception')
                 return self.fail(exc.usermessage)
                 # XXX skipping for now...

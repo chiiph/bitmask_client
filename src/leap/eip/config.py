@@ -9,15 +9,51 @@ from leap import certs
 from leap.base.config import baseconfig, util
 from leap.base.util.misc import null_check
 from leap.base.util.file import (which, mkdir_p, check_and_fix_urw_only)
-from leap.coreapp.permcheck import (is_pkexec_in_system,
-                                    is_auth_agent_running)
-from leap.eip import exceptions as eip_exceptions
+from leap.base.util.permcheck import (is_pkexec_in_system,
+                                      is_auth_agent_running)
+from leap.base.exceptions import CriticalError, Warning
+from leap.base.util.translations import translate
 from leap.eip import specs as eipspecs
 
 logger = logging.getLogger(name=__name__)
 provider_ca_file = BRANDING.get('provider_ca_file', None)
 
 _platform = platform.system()
+
+class EIPNoPolkitAuthAgentAvailable(CriticalError):
+    message = "No polkit authentication agent could be found"
+    usermessage = translate(
+        "EIPErrors",
+        "We could not find any authentication "
+        "agent in your system.<br/>"
+        "Make sure you have "
+        "<b>polkit-gnome-authentication-agent-1</b> "
+        "running and try again.")
+
+
+class EIPNoPkexecAvailable(Warning):
+    message = "No pkexec binary found"
+    usermessage = translate(
+        "EIPErrors",
+        "We could not find <b>pkexec</b> in your "
+        "system.<br/> Do you want to try "
+        "<b>setuid workaround</b>? "
+        "(<i>DOES NOTHING YET</i>)")
+    failfirst = True
+
+
+class EIPInitNoKeyFileError(CriticalError):
+    message = "No vpn keys found in the expected path"
+    usermessage = translate(
+        "EIPErrors",
+        "We could not find your eip certs in the expected path")
+
+
+class EIPInitBadKeyFilePermError(Warning):
+    # I don't know if we should be telling user or not,
+    # we try to fix permissions and should only re-raise
+    # if permission check failed.
+    pass
 
 
 class EIPConfig(baseconfig.JSONLeapConfig):
@@ -301,7 +337,7 @@ def build_ovpn_command(debug=False, do_pkexec_check=True, vpnbin=None,
 
         if not is_pkexec_in_system():
             logger.error('no pkexec in system')
-            raise eip_exceptions.EIPNoPkexecAvailable
+            raise EIPNoPkexecAvailable()
 
         if not is_auth_agent_running():
             logger.warning(
@@ -309,7 +345,7 @@ def build_ovpn_command(debug=False, do_pkexec_check=True, vpnbin=None,
                 "pkexec will use its own text "
                 "based authentication agent. "
                 "that's probably a bad idea")
-            raise eip_exceptions.EIPNoPolkitAuthAgentAvailable
+            raise EIPNoPolkitAuthAgentAvailable()
 
         command.append('pkexec')
 
@@ -382,16 +418,16 @@ def check_vpn_keys(provider=None):
     if not os.path.isfile(provider_ca):
         logger.error('key file %s not found. aborting.',
                      provider_ca)
-        raise eip_exceptions.EIPInitNoKeyFileError
+        raise EIPInitNoKeyFileError()
 
     if not os.path.isfile(client_cert):
         logger.error('key file %s not found. aborting.',
                      client_cert)
-        raise eip_exceptions.EIPInitNoKeyFileError
+        raise EIPInitNoKeyFileError()
 
     for keyfile in (provider_ca, client_cert):
         # bad perms? try to fix them
         try:
             check_and_fix_urw_only(keyfile)
         except OSError:
-            raise eip_exceptions.EIPInitBadKeyFilePermError
+            raise EIPInitBadKeyFilePermError()

@@ -34,3 +34,10 @@ class CriticalError(LeapException):
     """
     critical = True
     failfirst = True
+
+
+class Warning(LeapException):
+    """
+    just that, warnings
+    """
+    warning = True

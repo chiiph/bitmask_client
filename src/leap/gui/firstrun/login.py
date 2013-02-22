@@ -8,7 +8,7 @@ import requests
 
 from leap.base import auth
 from leap.gui.firstrun.mixins import UserFormMixIn
-from leap.gui.progress import InlineValidationPage
+from leap.gui.wizards.base.progress import InlineValidationPage
 from leap.gui import styles
 
 from leap.coreapp.constants import APP_LOGO, FULL_USERNAME_REGEX

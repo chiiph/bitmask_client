@@ -13,7 +13,7 @@ from PyQt4 import QtCore
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import Qt
 
-from leap.gui import progress
+from leap.gui.wizards.base import progress
 
 
 class ProgressStepTestCase(unittest.TestCase):

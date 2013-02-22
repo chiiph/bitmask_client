@@ -8,7 +8,7 @@ from PyQt4 import QtGui
 
 #import requests
 
-from leap.gui.progress import ValidationPage
+from leap.gui.wizards.base.progress import ValidationPage
 from leap.base.util.web import get_https_domain_and_port
 
 from leap.base import auth

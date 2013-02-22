@@ -10,7 +10,7 @@ from PyQt4 import QtGui
 
 from leap.base import exceptions as baseexceptions
 from leap.base.util.web import get_https_domain_and_port
-from leap.gui.progress import InlineValidationPage
+from leap.gui.wizards.base.progress import InlineValidationPage
 from leap.gui import styles
 from leap.coreapp.utils import delay
 from leap.eip.checks import HttpsBadCertError

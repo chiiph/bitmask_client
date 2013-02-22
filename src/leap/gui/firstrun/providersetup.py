@@ -9,7 +9,7 @@ import requests
 from PyQt4 import QtGui
 
 from leap.base import exceptions as baseexceptions
-from leap.gui.progress import ValidationPage
+from leap.gui.wizards.base.progress import ValidationPage
 
 from leap.coreapp.constants import APP_LOGO
 

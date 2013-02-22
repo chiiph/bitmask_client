@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 from leap.base import auth
 from leap.gui import styles
 from leap.gui.constants import APP_LOGO, BARE_USERNAME_REGEX
-from leap.gui.progress import InlineValidationPage
+from leap.gui.wizards.base.progress import InlineValidationPage
 
 
 class RegisterUserPage(InlineValidationPage, UserFormMixIn):

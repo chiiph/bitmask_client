@@ -13,7 +13,7 @@ from leap.coreapp.mixins.eip_conductor import EIPConductorAppMixin
 from leap.coreapp.network import NetworkCheckerAppMixin
 from leap.coreapp.threads import FunThread
 from leap.gui.log import LogPaneMixin
-from leap.gui.leap_app import MainWindowMixin
+from leap.gui.mixins.mainwindow import MainWindowMixin
 from leap.gui.systray import StatusAwareTrayIconMixin
 from leap.eip.checks import ProviderCertChecker
 

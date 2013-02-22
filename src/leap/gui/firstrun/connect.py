@@ -12,7 +12,7 @@ from leap.gui.progress import ValidationPage
 from leap.util.web import get_https_domain_and_port
 
 from leap.base import auth
-from leap.gui.constants import APP_LOGO
+from leap.coreapp.constants import APP_LOGO
 
 logger = logging.getLogger(__name__)
 

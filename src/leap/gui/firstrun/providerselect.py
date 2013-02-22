@@ -12,10 +12,10 @@ from leap.base import exceptions as baseexceptions
 from leap.eip import exceptions as eipexceptions
 from leap.gui.progress import InlineValidationPage
 from leap.gui import styles
-from leap.gui.utils import delay
+from leap.coreapp.utils import delay
 from leap.util.web import get_https_domain_and_port
 
-from leap.gui.constants import APP_LOGO
+from leap.coreapp.constants import APP_LOGO
 
 logger = logging.getLogger(__name__)
 

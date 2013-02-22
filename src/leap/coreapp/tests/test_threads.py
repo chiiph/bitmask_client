@@ -1,7 +1,7 @@
 import unittest
 
 import mock
-from leap.gui import threads
+from leap.coreapp import threads
 
 
 class FunThreadTestCase(unittest.TestCase):

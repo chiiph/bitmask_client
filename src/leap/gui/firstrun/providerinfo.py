@@ -5,7 +5,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from leap.gui.constants import APP_LOGO
+from leap.coreapp.constants import APP_LOGO
 from leap.base.util.translations import translate
 
 logger = logging.getLogger(__name__)

@@ -11,7 +11,7 @@ from leap.gui.firstrun.mixins import UserFormMixIn
 from leap.gui.progress import InlineValidationPage
 from leap.gui import styles
 
-from leap.gui.constants import APP_LOGO, FULL_USERNAME_REGEX
+from leap.coreapp.constants import APP_LOGO, FULL_USERNAME_REGEX
 
 
 class LogInPage(InlineValidationPage, UserFormMixIn):  # InlineValidationPage

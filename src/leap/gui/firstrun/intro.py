@@ -4,7 +4,7 @@ Intro page used in first run wizard
 
 from PyQt4 import QtGui
 
-from leap.gui.constants import APP_LOGO
+from leap.coreapp.constants import APP_LOGO
 
 
 class IntroPage(QtGui.QWizardPage):

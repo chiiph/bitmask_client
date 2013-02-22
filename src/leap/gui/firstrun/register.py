@@ -18,7 +18,6 @@ from leap.base import auth
 from leap.gui import styles
 from leap.gui.constants import APP_LOGO, BARE_USERNAME_REGEX
 from leap.gui.progress import InlineValidationPage
-from leap.gui.styles import ErrorLabelStyleSheet
 
 
 class RegisterUserPage(InlineValidationPage, UserFormMixIn):
@@ -86,7 +85,7 @@ class RegisterUserPage(InlineValidationPage, UserFormMixIn):
         layout.setColumnMinimumWidth(0, 20)
 
         validationMsg = QtGui.QLabel("")
-        validationMsg.setStyleSheet(ErrorLabelStyleSheet)
+        validationMsg.setStyleSheet(styles.ErrorLabelStyleSheet)
 
         self.validationMsg = validationMsg
 

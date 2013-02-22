@@ -11,7 +11,7 @@ from PyQt4 import QtGui
 from leap.base import exceptions as baseexceptions
 from leap.gui.progress import ValidationPage
 
-from leap.gui.constants import APP_LOGO
+from leap.coreapp.constants import APP_LOGO
 
 logger = logging.getLogger(__name__)
 

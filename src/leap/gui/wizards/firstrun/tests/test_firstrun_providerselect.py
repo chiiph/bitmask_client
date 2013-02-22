@@ -22,7 +22,7 @@ except ImportError:
     from leap.base.util.dicts import OrderedDict
 
 
-class TestPage(firstrun.providerselect.SelectProviderPage):
+class TestPage(firstrun.providerselect_page.SelectProviderPage):
     pass
 
 

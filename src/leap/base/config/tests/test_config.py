@@ -10,6 +10,9 @@ import requests
 from leap.base.config import baseconfig
 from leap.base import constants
 from leap.base.util.file import mkdir_p
+from leap.base.config.util import (get_default_provider_path,
+                                   get_config_dir,
+                                   validate_ip)
 from leap.eip import constants as eipconstants
 from leap.testing.basetest import BaseLeapTest
 
@@ -191,7 +194,7 @@ class ConfigHelperFunctions(BaseLeapTest):
         nice config dir? (linux)
         """
         self.assertEqual(
-            baseconfig.get_config_dir(),
+            get_config_dir(),
             os.path.expanduser('~/.config/leap'))
 
     @unittest.skipUnless(_system == "Darwin", "mac only")
@@ -216,7 +219,7 @@ class ConfigHelperFunctions(BaseLeapTest):
         is default provider path ok?
         """
         self.assertEqual(
-            baseconfig.get_default_provider_path(),
+            get_default_provider_path(),
             os.path.expanduser(
                 '~/.config/leap/providers/%s/' %
                 constants.DEFAULT_PROVIDER)
@@ -228,11 +231,11 @@ class ConfigHelperFunctions(BaseLeapTest):
         """
         check our ip validation
         """
-        baseconfig.validate_ip('3.3.3.3')
+        validate_ip('3.3.3.3')
         with self.assertRaises(socket.error):
-            baseconfig.validate_ip('255.255.255.256')
+            validate_ip('255.255.255.256')
         with self.assertRaises(socket.error):
-            baseconfig.validate_ip('foobar')
+            validate_ip('foobar')
 
     @unittest.skip
     def test_validate_domain(self):

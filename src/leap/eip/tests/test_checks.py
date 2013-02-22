@@ -16,6 +16,7 @@ import jsonschema
 import requests
 
 from leap.base.config import baseconfig
+from leap.base.config.util import get_default_provider_path
 from leap.base.constants import (DEFAULT_PROVIDER_DEFINITION,
                                  DEFINITION_EXPECTED_PATH)
 from leap.base.util.file import mkdir_f
@@ -148,7 +149,7 @@ class EIPCheckTest(BaseLeapTest):
             sampleconfig = testdata.EIP_SAMPLE_CONFIG
             checker.fetch_definition(config=sampleconfig)
 
-        fn = os.path.join(baseconfig.get_default_provider_path(),
+        fn = os.path.join(get_default_provider_path(),
                           DEFINITION_EXPECTED_PATH)
         with open(fn, 'r') as fp:
             deserialized = json.load(fp)

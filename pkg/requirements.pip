@@ -14,4 +14,8 @@ python-dateutil
 psutil
 ipaddr
 
-leap.common>=0.2.1-dev
+leap.common>=0.2.4
+# TODO: add soledad dependency
+
+# Remove this when nickserver is online
+mock

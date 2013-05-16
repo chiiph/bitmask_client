@@ -731,6 +731,9 @@ class MainWindow(QtGui.QMainWindow):
         If there was a problem, displays it, otherwise it does nothing.
         This is used for intermediate bootstrapping stages, in case
         they fail.
+
+        :param data: result from the bootstrapping stage for Soledad
+        :type data: dict
         """
         passed = data[self._soledad_bootstrapper.PASSED_KEY]
         if not passed:

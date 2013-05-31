@@ -1,4 +1,4 @@
-include pkg/*
-include docs/*
+recursive-include pkg *
+recursive-include docs *
 include versioneer.py
 include src/leap/util/reqs.txt

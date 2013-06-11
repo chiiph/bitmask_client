@@ -243,7 +243,7 @@ class SRPAuth(QtCore.QObject):
             if auth_result.status_code == 422:
                 logger.error("[%s] Wrong password (HAMK): [%s]" %
                              (auth_result.status_code,
-                              content.
+                              json.loads(content).
                               get("errors", "")))
                 raise SRPAuthenticationError(self.tr("Wrong password"))
 

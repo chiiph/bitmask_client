@@ -37,6 +37,7 @@ from leap.config.providerconfig import ProviderConfig
 from leap.crypto.srpauth import SRPAuth
 from leap.gui.loggerwindow import LoggerWindow
 from leap.gui.wizard import Wizard
+from leap.gui.login import LoginWidget
 from leap.services.eip.eipbootstrapper import EIPBootstrapper
 from leap.services.eip.eipconfig import EIPConfig
 from leap.services.eip.providerbootstrapper import ProviderBootstrapper
@@ -135,11 +136,18 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.ui.lnPassword.setEchoMode(QtGui.QLineEdit.Password)
+        self._settings = LeapSettings(standalone)
 
-        self.ui.btnLogin.clicked.connect(self._login)
-        self.ui.lnUser.returnPressed.connect(self._focus_password)
-        self.ui.lnPassword.returnPressed.connect(self._login)
+        self._login_widget = LoginWidget(
+            self._settings,
+            self.ui.stackedWidget.widget(self.LOGIN_INDEX))
+        self.ui.loginLayout.addWidget(self._login_widget)
+
+        self._login_widget.login.connect(self._login)
+        self._login_widget.show_wizard.connect(
+            self._launch_wizard)
+
+        self.ui.btnShowLog.clicked.connect(self._show_logger_window)
 
         self.ui.stackedWidget.setCurrentIndex(self.LOGIN_INDEX)
 
@@ -206,10 +214,6 @@ class MainWindow(QtGui.QMainWindow):
         self._vpn.qtsigs.process_finished.connect(
             self._eip_finished)
 
-        self.ui.chkRemember.stateChanged.connect(
-            self._remember_state_changed)
-        self.ui.chkRemember.setEnabled(keyring.get_keyring() is not None)
-
         self.ui.action_sign_out.setEnabled(False)
         self.ui.action_sign_out.triggered.connect(self._logout)
         self.ui.action_about_leap.triggered.connect(self._about)
@@ -243,7 +247,6 @@ class MainWindow(QtGui.QMainWindow):
         self._action_visible.triggered.connect(self._toggle_visible)
 
         self._enabled_services = []
-        self._settings = LeapSettings(standalone)
 
         self._center_window()
 
@@ -280,6 +283,13 @@ class MainWindow(QtGui.QMainWindow):
             self._finish_init()
 
     def _rejected_wizard(self):
+        """
+        SLOT
+        TRIGGERS: self._wizard.rejected
+
+        Called if the wizard has been cancelled or closed before
+        finishing.
+        """
         if self._wizard_firstrun:
             self._settings.set_properprovider(False)
             self.quit()
@@ -287,6 +297,17 @@ class MainWindow(QtGui.QMainWindow):
             self._finish_init()
 
     def _launch_wizard(self):
+        """
+        SLOT
+        TRIGGERS:
+          self._login_widget.show_wizard
+          self.ui.action_wizard.triggered
+
+        Also called in first run.
+
+        Launches the wizard, creating the object itself if not already
+        there.
+        """
         if self._wizard is None:
             self._wizard = Wizard(bypass_checks=self._bypass_checks)
         self._wizard.accepted.connect(self._finish_init)
@@ -309,6 +330,11 @@ class MainWindow(QtGui.QMainWindow):
 
     def _show_logger_window(self):
         """
+        SLOT
+        TRIGGERS:
+          self.ui.action_show_logs.triggered
+          self.ui.btnShowLog.clicked
+
         Displays the window with the history of messages logged until now
         and displays the new ones on arrival.
         """
@@ -321,11 +347,6 @@ class MainWindow(QtGui.QMainWindow):
                 self._logger_window.show()
         else:
             self._logger_window.show()
-
-    def _remember_state_changed(self, state):
-        enable = True if state == QtCore.Qt.Checked else False
-        self.ui.chkAutoLogin.setEnabled(enable)
-        self._settings.set_remember(enable)
 
     def _new_updates_available(self, req):
         """
@@ -376,8 +397,21 @@ class MainWindow(QtGui.QMainWindow):
                                       msg)
 
     def _finish_init(self):
-        self.ui.cmbProviders.clear()
-        self.ui.cmbProviders.addItems(self._configured_providers())
+        """
+        SLOT
+        TRIGGERS:
+          self._wizard.accepted
+
+        Also called at the end of the constructor if not first run,
+        and after _rejected_wizard if not first run.
+
+        Implements the behavior after either constructing the
+        mainwindow object, loading the saved user/password, or after
+        the wizard has been executed.
+        """
+        # XXX: May be this can be divided into two methods?
+
+        self._login_widget.set_providers(self._configured_providers())
         self._show_systray()
         self.show()
 
@@ -387,20 +421,18 @@ class MainWindow(QtGui.QMainWindow):
 
             # select the configured provider in the combo box
             domain = self._wizard.get_domain()
-            provider_index = self.ui.cmbProviders.findText(domain)
-            self.ui.cmbProviders.setCurrentIndex(provider_index)
+            self._login_widget.select_provider_by_name(domain)
 
-            self.ui.chkRemember.setChecked(self._wizard.get_remember())
+            self._login_widget.set_remember(self._wizard.get_remember())
             self._enabled_services = list(self._wizard.get_services())
             self._settings.set_enabled_services(
-                self.ui.cmbProviders.currentText(),
+                self._login_widget.get_selected_provider(),
                 self._enabled_services)
             if possible_username is not None:
-                self.ui.lnUser.setText(possible_username)
-                self._focus_password()
+                self._login_widget.set_user(possible_username)
             if possible_password is not None:
-                self.ui.lnPassword.setText(possible_password)
-                self.ui.chkRemember.setChecked(True)
+                self._login_widget.set_password(possible_password)
+                self._login_widget.set_remember(True)
                 self._login()
             self._wizard = None
             self._settings.set_properprovider(True)
@@ -411,7 +443,6 @@ class MainWindow(QtGui.QMainWindow):
                 return
 
             saved_user = self._settings.get_user()
-            auto_login = self._settings.get_autologin()
 
             try:
                 username, domain = saved_user.split('@')
@@ -422,15 +453,12 @@ class MainWindow(QtGui.QMainWindow):
 
             if saved_user is not None:
                 # fill the username
-                self.ui.lnUser.setText(username)
+                self._login_widget.set_user(username)
 
                 # select the configured provider in the combo box
-                provider_index = self.ui.cmbProviders.findText(domain)
-                self.ui.cmbProviders.setCurrentIndex(provider_index)
+                self._login_widget.set_provider_by_name(domain)
 
-                self.ui.chkRemember.setChecked(True)
-                self.ui.chkAutoLogin.setEnabled(self.ui.chkRemember
-                                                .isEnabled())
+                self._login_widget.set_remember(True)
 
                 saved_password = None
                 try:
@@ -441,12 +469,7 @@ class MainWindow(QtGui.QMainWindow):
                     logger.debug("Incorrect Password. %r." % (e,))
 
                 if saved_password is not None:
-                    self.ui.lnPassword.setText(saved_password.decode("utf8"))
-
-                # Only automatically login if there is a saved user
-                # and the password was retrieved right
-                self.ui.chkAutoLogin.setChecked(auto_login)
-                if auto_login and saved_password:
+                    self._login_widget.set_password(saved_password.decode("utf8"))
                     self._login()
 
     def _try_autostart_eip(self):
@@ -542,6 +565,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def _about(self):
         """
+        SLOT
+        TRIGGERS: self.ui.action_about_leap.triggered
+
         Display the About LEAP dialog
         """
         QtGui.QMessageBox.about(
@@ -579,7 +605,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self._settings.set_geometry(self.saveGeometry())
         self._settings.set_windowstate(self.saveState())
-        self._settings.set_autologin(self.ui.chkAutoLogin.isChecked())
 
         QtGui.QMainWindow.closeEvent(self, e)
 
@@ -614,23 +639,6 @@ class MainWindow(QtGui.QMainWindow):
         is_proper_provider = self._settings.get_properprovider()
         return not (has_provider_on_disk and is_proper_provider)
 
-    def _focus_password(self):
-        """
-        Focuses in the password lineedit
-        """
-        self.ui.lnPassword.setFocus()
-
-    def _set_status(self, status, error=True):
-        """
-        Sets the status label at the login stage to status
-
-        :param status: status message
-        :type status: str
-        """
-        if error:
-            status = "<font color='red'><b>%s</b></font>" % (status,)
-        self.ui.lblStatus.setText(status)
-
     def _set_eip_status(self, status, error=False):
         """
         Sets the status label at the VPN stage to status
@@ -643,28 +651,13 @@ class MainWindow(QtGui.QMainWindow):
             status = "<font color='red'><b>%s</b></font>" % (status,)
         self.ui.lblEIPStatus.setText(status)
 
-    def _login_set_enabled(self, enabled=False):
-        """
-        Enables or disables all the login widgets
-
-        :param enabled: wether they should be enabled or not
-        :type enabled: bool
-        """
-        self.ui.lnUser.setEnabled(enabled)
-        self.ui.lnPassword.setEnabled(enabled)
-        self.ui.btnLogin.setEnabled(enabled)
-        self.ui.chkRemember.setEnabled(enabled)
-        if not enabled:
-            self.ui.chkAutoLogin.setEnabled(False)
-        self.ui.cmbProviders.setEnabled(enabled)
-
     def _download_provider_config(self):
         """
         Starts the bootstrapping sequence. It will download the
         provider configuration if it's not present, otherwise will
         emit the corresponding signals inmediately
         """
-        provider = self.ui.cmbProviders.currentText()
+        provider = self._login_widget.get_selected_provider()
 
         self._provider_bootstrapper.run_provider_select_checks(
             provider,
@@ -684,7 +677,7 @@ class MainWindow(QtGui.QMainWindow):
         :type data: dict
         """
         if data[self._provider_bootstrapper.PASSED_KEY]:
-            provider = self.ui.cmbProviders.currentText()
+            provider = self._login_widget.get_selected_provider()
             if self._provider_config.loaded() or \
                     self._provider_config.load(os.path.join("leap",
                                                             "providers",
@@ -694,12 +687,12 @@ class MainWindow(QtGui.QMainWindow):
                     self._provider_config,
                     download_if_needed=True)
             else:
-                self._set_status(
+                self._login_widget.set_status(
                     self.tr("Could not load provider configuration"))
-                self._login_set_enabled(True)
+                self._login_widget.set_enabled(True)
         else:
-            self._set_status(data[self._provider_bootstrapper.ERROR_KEY])
-            self._login_set_enabled(True)
+            self._login_widget.set_status(data[self._provider_bootstrapper.ERROR_KEY])
+            self._login_widget.set_enabled(True)
 
     def _login(self):
         """
@@ -715,29 +708,29 @@ class MainWindow(QtGui.QMainWindow):
         """
         leap_assert(self._provider_config, "We need a provider config")
 
-        username = self.ui.lnUser.text()
-        password = self.ui.lnPassword.text()
-        provider = self.ui.cmbProviders.currentText()
+        username = self._login_widget.get_user()
+        password = self._login_widget.get_password()
+        provider = self._login_widget.get_selected_provider()
 
         self._enabled_services = self._settings.get_enabled_services(
-            self.ui.cmbProviders.currentText())
+            self._login_widget.get_selected_provider())
 
         if len(provider) == 0:
-            self._set_status(self.tr("Please select a valid provider"))
+            self._login_widget.set_status(self.tr("Please select a valid provider"))
             return
 
         if len(username) == 0:
-            self._set_status(self.tr("Please provide a valid username"))
+            self._login_widget.set_status(self.tr("Please provide a valid username"))
             return
 
         if len(password) == 0:
-            self._set_status(self.tr("Please provide a valid Password"))
+            self._login_widget.set_status(self.tr("Please provide a valid Password"))
             return
 
-        self._set_status(self.tr("Logging in..."), error=False)
-        self._login_set_enabled(False)
+        self._login_widget.set_status(self.tr("Logging in..."), error=False)
+        self._login_widget.set_enabled(False)
 
-        if self.ui.chkRemember.isChecked():
+        if self._login_widget.get_remember():
             # in the keyring and in the settings
             # we store the value 'usename@provider'
             username_domain = (username + '@' + provider).encode("utf8")
@@ -765,8 +758,8 @@ class MainWindow(QtGui.QMainWindow):
         leap_assert(self._provider_config, "We need a provider config!")
 
         if data[self._provider_bootstrapper.PASSED_KEY]:
-            username = self.ui.lnUser.text().encode("utf8")
-            password = self.ui.lnPassword.text().encode("utf8")
+            username = self._login_widget.get_user().encode("utf8")
+            password = self._login_widget.get_password().encode("utf8")
 
             if self._srp_auth is None:
                 self._srp_auth = SRPAuth(self._provider_config)
@@ -778,8 +771,8 @@ class MainWindow(QtGui.QMainWindow):
             # TODO: Add errback!
             self._login_defer = self._srp_auth.authenticate(username, password)
         else:
-            self._set_status(data[self._provider_bootstrapper.ERROR_KEY])
-            self._login_set_enabled(True)
+            self._login_widget.set_status(data[self._provider_bootstrapper.ERROR_KEY])
+            self._login_widget.set_enabled(True)
 
     def _authentication_finished(self, ok, message):
         """
@@ -789,7 +782,7 @@ class MainWindow(QtGui.QMainWindow):
         Once the user is properly authenticated, try starting the EIP
         service
         """
-        self._set_status(message, error=not ok)
+        self._login_widget.set_status(message, error=not ok)
         if ok:
             self.ui.action_sign_out.setEnabled(True)
             # We leave a bit of room for the user to see the
@@ -798,7 +791,7 @@ class MainWindow(QtGui.QMainWindow):
             QtCore.QTimer.singleShot(1000, self._switch_to_status)
             self._login_defer = None
         else:
-            self._login_set_enabled(True)
+            self._login_widget.set_enabled(True)
 
     def _switch_to_status(self):
         """
@@ -1162,9 +1155,9 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.ui.action_sign_out.setEnabled(False)
         self.ui.stackedWidget.setCurrentIndex(self.LOGIN_INDEX)
-        self.ui.lnPassword.setText("")
-        self._login_set_enabled(True)
-        self._set_status("")
+        self._login_widget.set_password("")
+        self._login_widget.set_enabled(True)
+        self._login_widget.set_status("")
 
     def _intermediate_stage(self, data):
         """
@@ -1181,8 +1174,8 @@ class MainWindow(QtGui.QMainWindow):
         """
         passed = data[self._provider_bootstrapper.PASSED_KEY]
         if not passed:
-            self._login_set_enabled(True)
-            self._set_status(data[self._provider_bootstrapper.ERROR_KEY])
+            self._login_widget.set_enabled(True)
+            self._login_widget.set_status(data[self._provider_bootstrapper.ERROR_KEY])
 
     def _eip_finished(self, exitCode):
         """

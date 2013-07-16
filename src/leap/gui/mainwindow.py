@@ -24,7 +24,7 @@ import platform
 import tempfile
 from functools import partial
 
-import keyring
+# import keyring
 
 from PySide import QtCore, QtGui
 from twisted.internet import threads
@@ -54,7 +54,7 @@ from leap.services.eip.vpnlaunchers import (VPNLauncherException,
                                             EIPNoPkexecAvailable,
                                             EIPNoPolkitAuthAgentAvailable)
 from leap.util import __version__ as VERSION
-from leap.util.keyring_helpers import has_keyring
+# from leap.util.keyring_helpers import has_keyring
 
 from leap.services.mail.smtpconfig import SMTPConfig
 
@@ -482,7 +482,7 @@ class MainWindow(QtGui.QMainWindow):
                 logger.error('Username@provider malformed. %r' % (e, ))
                 saved_user = None
 
-            if saved_user is not None and has_keyring():
+            if saved_user is not None and False:  #and has_keyring():
                 # fill the username
                 self._login_widget.set_user(username)
 
@@ -784,7 +784,7 @@ class MainWindow(QtGui.QMainWindow):
         self._login_widget.set_status(self.tr("Logging in..."), error=False)
         self._login_widget.set_enabled(False)
 
-        if self._login_widget.get_remember() and has_keyring():
+        if self._login_widget.get_remember() and False:  #has_keyring():
             # in the keyring and in the settings
             # we store the value 'usename@provider'
             username_domain = (username + '@' + provider).encode("utf8")

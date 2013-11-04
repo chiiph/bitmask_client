@@ -1,0 +1,2 @@
+  o In some desktop environments, polkit is executed as just
+    polkitd. Add a check for that kind of processes too. Fixes #4218.

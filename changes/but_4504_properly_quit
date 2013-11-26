@@ -1,0 +1,2 @@
+- Properly stop all the services when quitting the application. Fixes
+  #4504

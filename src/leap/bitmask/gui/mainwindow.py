@@ -1644,13 +1644,11 @@ class MainWindow(QtGui.QMainWindow):
         """
         logger.debug('About to quit, doing cleanup...')
 
-        self._mail_conductor.stop_imap_service()
-
         if self._srp_auth is not None:
             if self._srp_auth.get_session_id() is not None or \
                self._srp_auth.get_token() is not None:
                 # XXX this can timeout after loong time: See #3368
-                self._srp_auth.logout()
+                self._logout()
 
         if self._soledad:
             logger.debug("Closing soledad...")

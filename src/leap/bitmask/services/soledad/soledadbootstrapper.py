@@ -28,8 +28,6 @@ from PySide import QtCore
 from u1db import errors as u1db_errors
 from zope.proxy import sameProxiedObjects
 
-from twisted.internet.threads import deferToThread
-
 from leap.bitmask.config import flags
 from leap.bitmask.config.providerconfig import ProviderConfig
 from leap.bitmask.crypto.srpauth import SRPAuth

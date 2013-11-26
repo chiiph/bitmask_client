@@ -22,7 +22,7 @@ import os
 
 from PySide import QtCore, QtGui
 from twisted.internet import threads
-from zope.proxy import ProxyBase, setProxiedObject
+from zope.proxy import ProxyBase, setProxiedObject, sameProxiedObjects
 
 from leap.bitmask import __version__ as VERSION
 from leap.bitmask.config.leapsettings import LeapSettings
@@ -1550,8 +1550,9 @@ class MainWindow(QtGui.QMainWindow):
 
         # XXX: If other defers are doing authenticated stuff, this
         # might conflict with those. CHECK!
-        threads.deferToThread(self._srp_auth.logout)
+        d = threads.deferToThread(self._srp_auth.logout)
         self.logout.emit()
+        return d
 
     def _done_logging_out(self, ok, message):
         # TODO missing params in docstring
@@ -1644,13 +1645,21 @@ class MainWindow(QtGui.QMainWindow):
         """
         logger.debug('About to quit, doing cleanup...')
 
+        d = None
         if self._srp_auth is not None:
             if self._srp_auth.get_session_id() is not None or \
                self._srp_auth.get_token() is not None:
                 # XXX this can timeout after loong time: See #3368
-                self._logout()
+                d = self._logout()
+        from functools import partial
+        d2 = partial(threads.deferToThread, self._do_cleanup_and_quit)
+        if d is not None:
+            d.addCallback(d2)
+        else:
+            d2()
 
-        if self._soledad:
+    def _do_cleanup_and_quit(self, *args, **kwargs):
+        if not sameProxiedObjects(self._soledad, None):
             logger.debug("Closing soledad...")
             self._soledad.close()
         else:
@@ -1671,18 +1680,22 @@ class MainWindow(QtGui.QMainWindow):
 
         logger.debug('Cleaning pidfiles')
         self._cleanup_pidfiles()
+        threads.deferToThread(self._do_quit)
 
     def quit(self):
         """
         Cleanup and tidely close the main window before quitting.
         """
+        self._cleanup_and_quit()
+
+    def _do_quit(self):
         # TODO separate the shutting down of services from the
         # UI stuff.
 
         # Set this in case that the app is hidden
         QtGui.QApplication.setQuitOnLastWindowClosed(True)
 
-        self._cleanup_and_quit()
+        # self._cleanup_and_quit()
 
         self._really_quit = True
 

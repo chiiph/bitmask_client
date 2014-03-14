@@ -94,6 +94,22 @@ from ui_mainwindow import Ui_MainWindow
 
 logger = logging.getLogger(__name__)
 
+from multiprocessing import Process
+import os
+
+
+def info(title):
+    print title
+    print 'module name:', __name__
+    if hasattr(os, 'getppid'):  # only available on Unix
+        print 'parent process:', os.getppid()
+    print 'process id:', os.getpid()
+
+
+def f(name):
+    info('function f')
+    print 'hello', name
+
 
 class MainWindow(QtGui.QMainWindow):
     """
@@ -139,6 +155,11 @@ class MainWindow(QtGui.QMainWindow):
         """
         QtGui.QMainWindow.__init__(self)
         self.menuBar().setNativeMenuBar(False)
+
+        info('A'*50)
+        p = Process(target=f, args=("B"*50,))
+        p.start()
+        p.join()
 
         # register leap events ########################################
         register(signal=proto.UPDATER_NEW_UPDATES,

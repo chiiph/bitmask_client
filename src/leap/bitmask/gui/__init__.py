@@ -17,5 +17,3 @@
 """
 init file for leap.gui
 """
-app = __import__("app", globals(), locals(), [], 2)
-__all__ = [app]

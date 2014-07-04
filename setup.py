@@ -255,6 +255,7 @@ import platform
 _system = platform.system()
 IS_LINUX = True if _system == "Linux" else False
 IS_MAC = _system == "Darwin"
+IS_WIN = _system == "Windows"
 
 data_files = []
 
@@ -293,6 +294,18 @@ if IS_MAC:
 
     import py2app.recipes
     py2app.recipes.jsonschema = jsonschema_recipe()
+
+if IS_WIN:
+    from cx_Freeze import Executable, setup
+    extra_options["console"] = ['src/leap/bitmask/app.py']
+
+    build_exe_options = {"namespace_packages": ["leap.common", "leap.soledad", "leap.mail", "leap.keymanager", "zope.interface"]}
+    setup(  name = "guifoo",
+        version = "0.1",
+        description = "My GUI application!",
+	options = {"build_exe": build_exe_options},
+        executables = [Executable('src/leap/bitmask/app.py', base='Win32GUI')])
+    quit()
 
 setup(
     name="leap.bitmask",

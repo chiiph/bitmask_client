@@ -217,6 +217,7 @@ def main():
 
     sigint_window = partial(sigint_handler, window, logger=logger)
     signal.signal(signal.SIGINT, sigint_window)
+    signal.signal(signal.SIGHUP, sigint_window)
 
     # callable used in addSystemEventTrigger to handle SIGTERM
     sigterm_window = partial(sigterm_handler, window, logger=logger)

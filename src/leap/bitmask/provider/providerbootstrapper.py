@@ -33,6 +33,7 @@ from leap.bitmask.provider.pinned import PinnedProviders
 from leap.bitmask.services.abstractbootstrapper import AbstractBootstrapper
 from leap.bitmask.util.constants import REQUEST_TIMEOUT
 from leap.bitmask.util.request_helpers import get_content
+from leap.bitmask.platform_init import IS_MAC
 from leap.common import ca_bundle
 from leap.common.certs import get_digest
 from leap.common.check import leap_assert, leap_assert_type, leap_check
@@ -108,7 +109,12 @@ class ProviderBootstrapper(AbstractBootstrapper):
         if cert is not None:
             verify = cert
         else:
-            verify = ca_bundle.where()
+            if IS_MAC:
+                verify = os.path.join("Applications", "Bitmask.app",
+                                      "Contents", "Resources",
+                                      "cacert.pem")
+            else:
+                verify = ca_bundle.where()
 
         return verify
 

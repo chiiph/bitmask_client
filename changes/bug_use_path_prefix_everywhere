@@ -1,0 +1,1 @@
+- Properly use get_path_prefix for provider.json and eip-service.json

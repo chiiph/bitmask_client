@@ -235,7 +235,7 @@ class ProviderBootstrapper(AbstractBootstrapper):
 
             provider_config = ProviderConfig()
             provider_config.load(data=provider_definition, mtime=mtime)
-            provider_config.save(["leap", "providers",
+            provider_config.save([util.get_path_prefix(), "leap", "providers",
                                   domain, "provider.json"])
 
             if flags.API_VERSION_CHECK:

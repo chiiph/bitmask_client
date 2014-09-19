@@ -273,7 +273,7 @@ extra_options = {}
 if IS_MAC:
     extra_options["app"] = ['src/leap/bitmask/app.py']
     OPTIONS = {
-        'argv_emulation': True,
+        'argv_emulation': False,
         'plist': 'pkg/osx/Info.plist',
         'iconfile': 'pkg/osx/bitmask.icns',
     }

@@ -45,3 +45,8 @@ Notes
 (*) this checklist kindly borrowed from tahoe-lafs documentation =)
 
 For a good reference look at http://nvie.com/posts/a-successful-git-branching-model/
+
+Bundle on OSX
+-------------
+
+- Add an empty __init__.py to google and zope, because these are namespace packages and otherwise they won't be picked up by py2app

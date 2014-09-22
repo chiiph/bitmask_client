@@ -294,6 +294,19 @@ if IS_MAC:
     import py2app.recipes
     py2app.recipes.jsonschema = jsonschema_recipe()
 
+    class cryptography_recipe(object):
+        def check(self, dist, mf):
+            m = mf.findNode('cryptography')
+            if m is None:
+                return None
+
+            # Don't put jsonschema in the site-packages.zip file
+            return dict(
+                packages=['cryptography']
+            )
+
+    py2app.recipes.cryptography = cryptography_recipe()
+
 setup(
     name="leap.bitmask",
     package_dir={"": "src"},
